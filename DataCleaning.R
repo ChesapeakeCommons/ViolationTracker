@@ -9,7 +9,8 @@ library(tidyverse)
 
 ### Imports ### 
 GeoCoded <- read_csv("Data/GeoCode/GeoCodedFacilities.csv")
-UnGeoCoded <- read_csv("Data/GeoCode/GeoCodeReview.csv")
+UnGeoCoded <- read_csv("Data/GeoCode/GeoCodeReview.csv") %>%
+              distinct(`Site No`, .keep_all = TRUE)
 
 Violation <- read_csv("Data/RawData/ListOfWSASignificantViolations.3_29_2021 10_59_14 AM.csv")
 Enforcement <-  read_csv("Data/RawData/ListOfWSAFormalEnforcementActions.3_29_2021 10_59_19 AM.csv")
@@ -26,6 +27,33 @@ names(Enforcement)<-make.names(names(Enforcement),unique = TRUE)
 Enforcement <- Enforcement %>% 
                rename("Site.No" = SITE.No)
 names(Compliance)<-make.names(names(Compliance),unique = TRUE)
+
+
+
+ComplianceLocations <- Compliance %>%
+                      select(Site.No,Site.Name,Street.Address,County,City..State.Zip)%>%
+                      distinct(Site.No, .keep_all = TRUE)%>%
+                      mutate(Type = "Compliance")
+
+EnforcementLocations <- Enforcement %>%
+                      select(Site.No,Site.Name,Street.Address,County,City..State.Zip)%>%
+                      distinct(Site.No, .keep_all = TRUE)%>%
+                      mutate(Type = "Enforcement")
+
+
+ViolationLocations <- Violation %>%
+                      select(Site.No,Site.Name,Street.Address,County,City..State.Zip)%>%
+                      distinct(Site.No, .keep_all = TRUE)%>%
+                      mutate(Type = "Violation")
+
+
+LocationsAddresses <- rbind(ViolationLocations,ComplianceLocations,EnforcementLocations)%>%
+             distinct(Site.No, .keep_all = TRUE)
+
+write.csv(LocationsAddresses, "Data/GeoCode/LocationsAddresses_v1.csv")
+
+
+
 
 
 ## Finding list of uniques by Site No, and Location Nam
@@ -49,23 +77,36 @@ UniqueGeoCodeNo_Names <- GeoCoded %>%
 
 
 GeoLocatedTrimmed <- GeoCoded %>%
-                     select(c(Site.No,Latitude,Longitude))
+                     select(c(Site.No,Latitude,Longitude))%>%
+                     distinct(Site.No, .keep_all = TRUE)
 
 
 ### JOING LAT LONGS ### 
-ViolationGeo      <- Violation %>%
-                     
-                     
+## Gabe 4.6.2021 - the GeolocatedTrimmed does not contain the full universe of locations. Sending list of locations form each file to john for easy geocoding 
+ViolationGeo <- left_join(Violation, GeoLocatedTrimmed)
+EnforcementGeo <- left_join(Enforcement, GeoLocatedTrimmed)
+ComplianceGeo <-left_join(Compliance, GeoLocatedTrimmed)
+
+### Counting NAs ## 
+ViolationNa <- ViolationGeo %>%
+               filter(is.na(Latitude))%>%
+               distinct(Site.No)
+
+EnforcementNa <- EnforcementGeo %>%
+              filter(is.na(Latitude))%>%
+              distinct(Site.No)
+
+ComplianceNa <- ComplianceGeo %>%
+              filter(is.na(Latitude))%>%
+                distinct(Site.No)
 
 
 
-EnforecementGeo   <- Enforcement
-ComplianceGeo     <- Compliance
+ViolationTest <- anti_join(Violation, GeoLocatedTrimmed, by = "Site.No")%>%
+                  distinct(Site.No)
 
-
-
-
-
+                
+ViolationTest2 <- anti_join(Violation, Compliance, by = "Site.No")%>%
 
 
 
