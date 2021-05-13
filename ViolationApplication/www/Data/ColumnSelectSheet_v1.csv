@@ -1,0 +1,35 @@
+Type,NewName,OldName
+C,Site #,SiteNo
+C,Street,StreetAddress
+C,City State Zip,CityStateZip
+C,County,County
+C,Inspection Type,InspectionType
+C,Inspection Date,InspectionDate
+C,MD Permit #,PermitNo
+C,NPDES #,NPDESNo
+C,Complaint Tracking #,ComplaintTrackingNo
+C,Inspection Reason,InspectionReason
+C,Condition,SiteCondition
+C,Recommended Actions,RecommendedActions
+C,Compliance Assistance,ComplianceAssist
+C,Latitude,Latitude
+C,Longitude,Longitude
+E,Site #,SiteNo
+E,Street,StreetAddress
+E,City State Zip,CityStateZip
+E,County,County
+E,Enforcement Action,EnforcementAction
+E,Date Issued,EnforcementActionIssued
+E,Date Closed,CaseClosed
+E,Media,Media
+E,Latitude,Latitude
+E,Longitude,Longitude
+V,Site #,SiteNo
+V,Street,StreetAddress
+V,City State Zip,CityStateZip
+V,County,County
+V,Violation Impact,EnfIssue
+V,Violation Date,ResolvedDate
+V,Date Resolved,ViolationSNCDate
+V,Latitude,Latitude
+V,Longitude,Longitude

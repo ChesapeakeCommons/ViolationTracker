@@ -1,0 +1,12 @@
+name: ViolationApplication
+title: ViolationApplication
+username:
+account: gabriel-watson
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 4071643
+bundleId: 4590734
+url: https://gabriel-watson.shinyapps.io/ViolationApplication/
+when: 1620836224.61196
+asMultiple: FALSE
+asStatic: FALSE

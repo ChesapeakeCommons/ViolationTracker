@@ -1,122 +1,354 @@
-##### INSPECTING AND CLEANING RAW DATA FOR THE VIOLATION TRACKER ### 
+##### Violation Tracker Data Cleaning ##### 
+##### Documentation: https://docs.google.com/document/d/1YhQAcudtysYLMNAyIhjnYEuFEiHHChvjyzvtY3DCk_4/edit 
+##### Program Use: For Updating data for the Violation Tracker once monthly ##
+##### Flow: IMPORTING AND GEOLOCATING 
+#####          Import new files from MDE by swapping out file handles 
+#####          Check to see if new site numbers have been added 
+#####          Geocode new site numbers via ESRI API
+#####       DATA PROCESSING
+#####          Add value type 
+#####          Bind Datasets 
+#####          Clean Variable Names 
+#####          Marker Logic 
+
+
 
 
 
 library(tidyverse)
+library(lubridate)
+library(plyr)
+library(ggmap)
+library(httr)
+library(jsonlite)
+library(sf)
+library(geojsonsf)
+library(rgdal)
+
+############### ############### ###########
+### IMPORTING AND GEOLOCATING ####
+############### ############### ###########
+LocationsOnlyGeo <- read_csv("Data/GeoCode/LocationGeoCodeViolationTracker_0.csv")
+ComplianceGeo <- read_csv("Data/GeoCode/ComplianceGeo_v1.csv")
+EnforcementGeo <- read_csv("Data/GeoCode/EnforcementGeo_v1.csv")
+ViolationGeo <- read_csv("Data/GeoCode/ViolationGeo_v1.csv")
 
 
 
 
-### Imports ### 
-GeoCoded <- read_csv("Data/GeoCode/LocationGeoCodeViolationTracker_0.csv")
-UnGeoCoded <- read_csv("Data/GeoCode/LocationGeoCodeViolationTrackeReview_1.csv") 
-
-Violation <- read_csv("Data/RawData/ListOfWSASignificantViolations.3_29_2021 10_59_14 AM.csv")
-Enforcement <-  read_csv("Data/RawData/ListOfWSAFormalEnforcementActions.3_29_2021 10_59_19 AM.csv")
-Compliance <-  read_csv("Data/RawData/ListOfWSACompliance.3_29_2021 10_58_59 AM.csv")
-
-
-### Rectifying variable names ###
-names(GeoCoded)<-make.names(names(GeoCoded),unique = TRUE)
-GeoCoded <- GeoCoded %>%
-            rename("Longitude" = x, "Latitude" = y)
-names(UnGeoCoded)<-make.names(names(UnGeoCoded),unique = TRUE)
-names(Violation)<-make.names(names(Violation),unique = TRUE)
-names(Enforcement)<-make.names(names(Enforcement),unique = TRUE) 
-Enforcement <- Enforcement %>% 
-               rename("Site.No" = SITE.No)
-names(Compliance)<-make.names(names(Compliance),unique = TRUE)
-
-### Just the trimmed Locations 
-GeoLocatedTrimmed <- GeoCoded %>%
-  select(c(Site.No,Latitude,Longitude))
-
-
-## CHECKING THE MISSINGS ##
-# ## Counting NAs ##
-ViolationNa <- ViolationGeo %>%
-               filter(is.na(Latitude))
-EnforcementNa <- EnforcementGeo %>%
-              filter(is.na(Latitude))
-ComplianceNa <- ComplianceGeo %>%
-              filter(is.na(Latitude))
-## OK LIST of NAs IS SUPER SMALL, LOOKS LIKE WE LOCATED 98%+! ### 
-
-## Saving out here 
-ViolationGeo <- left_join(Violation, GeoLocatedTrimmed)%>%
-  distinct()%>%
-  filter(!is.na(Latitude))
-EnforcementGeo <- left_join(Enforcement, GeoLocatedTrimmed)%>%
-  distinct()%>%
-  filter(!is.na(Latitude))
-ComplianceGeo <-left_join(Compliance, GeoLocatedTrimmed)%>%
-  distinct()%>%
-  filter(!is.na(Latitude))
-
-write.csv(ViolationGeo, "Data/GeoCode/ViolationGeoCoded_v1.csv")
-write.csv(EnforcementGeo, "Data/GeoCode/EnforcementGeo_v1.csv")
-write.csv(ComplianceGeo, "Data/GeoCode/ComplianceGeo_v1.csv")
 
 
 
-### OK THIS SECTION WAS THE FIRST ATTEMPT UNTIL I FOUND OUT THAT I DIDN'T HAVE THE FULL GEOCODED LIST  ####
-# # ### Selecting just the locations and saving out ###
-# ComplianceLocations <- Compliance %>%
-#                       select(Site.No,Site.Name,Street.Address,County,City..State.Zip)%>%
-#                       distinct(Site.No, .keep_all = TRUE)%>%
-#                       mutate(Type = "Compliance")
+
+
+############### ############### ###########
+############# DATA PROCESSING ########### #
+############### ############### ###########
+
+### Adding a type value ### 
+ComplianceGeo <- ComplianceGeo %>%
+                 mutate(Type = "C")
+
+EnforcementGeo<- EnforcementGeo %>%
+                mutate(Type = "E")
+
+ViolationGeo<- ViolationGeo %>%
+                 mutate(Type = "V")
+
+## Counting the Number of NA's for the date catagories ## 
+# ComplianceMissing <- ComplianceGeo %>%
+#   summarise_all(funs(sum(is.na(.))))
 # 
-# EnforcementLocations <- Enforcement %>%
-#                       select(Site.No,Site.Name,Street.Address,County,City..State.Zip)%>%
-#                       distinct(Site.No, .keep_all = TRUE)%>%
-#                       mutate(Type = "Enforcement")
+# EnforcementMissing <- EnforcementGeo %>%
+#   summarise_all(funs(sum(is.na(.))))
 # 
-# 
-# ViolationLocations <- Violation %>%
-#                       select(Site.No,Site.Name,Street.Address,County,City..State.Zip)%>%
-#                       distinct(Site.No, .keep_all = TRUE)%>%
-#                       mutate(Type = "Violation")
-# 
-# 
-# LocationsAddresses <- rbind(ViolationLocations,ComplianceLocations,EnforcementLocations)%>%
-#              distinct(Site.No, .keep_all = TRUE)
-# write.csv(LocationsAddresses, "Data/GeoCode/LocationsAddresses_v1.csv")
+# ViolationMissing <-  ViolationGeo %>%
+#   summarise_all(funs(sum(is.na(.))))
 
 
-# 
-# 
-# 
-# ## Finding list of uniques by Site No, and Location Nam
-# UniqueGeoCodeLatLong <- GeoCoded %>%
-#                           distinct(Latitude,Longitude, .keep_all = TRUE)%>%
-#                           mutate(LatLongPair = paste(as.character(Latitude),as.character(Longitude), sep = ""))
-# 
-# # UniqueGeoCodeOnlyNames <- GeoCoded %>% 
-# #                           distinct(Site.Name)
-# # UniqueGeoCodeOnlyNo <- GeoCoded %>% 
-# #                          distinct(Site.No)
-# # 
-# # ## Ok there are more unique site No's (8527) then unique site names (8473), meaning that some site numbers share a site name - finding which ones below ## 
-# UniqueGeoCodeNo_Names <- GeoCoded %>%
-#                          distinct(Site.No,Site.Name, .keep_all = TRUE)%>%
-#                            mutate(LatLongPair = paste(as.character(Latitude),as.character(Longitude), sep = ""))
-# # 
-# # Duplicated <- UniqueGeoCodeNo_Names[duplicated(UniqueGeoCodeNo_Names$Site.Name)|duplicated(UniqueGeoCodeNo_Names$Site.Name, fromLast=TRUE),]
-#  DuplicatedLatLong <- UniqueGeoCodeNo_Names[duplicated(UniqueGeoCodeNo_Names$LatLongPair)|duplicated(UniqueGeoCodeNo_Names$LatLongPair, fromLast=TRUE),]
-# # #Ok looking at this list, the Site.No does refer to different sites despite the same name. Ie  different permitIDs, different Lat Longs, etc - I think we are good to continue. 
-# 
-# 
-# GeoLocatedTrimmed <- GeoCoded %>%
-#                      select(c(Site.No,Latitude,Longitude))%>%
-#                      distinct(Site.No, .keep_all = TRUE)
-# 
+### Binding rows ###
+CombinedData <- bind_rows(ComplianceGeo,EnforcementGeo,ViolationGeo) 
+# We are looking for 37,986 rows and we got that 4.29.2021 #
+
+
+### Cleaning Variable names ### 
+colnames(CombinedData) <- gsub('\\.','',colnames(CombinedData))
+
+
+### Data Cleaning ###
+Permits <- CombinedData %>%
+                 mutate(SiteNo = as.character(SiteNo))%>%
+                 mutate(InspectionDate = mdy(InspectionDate))%>%
+                 mutate(ResolvedDate = mdy(ResolvedDate))%>%
+                 mutate(ViolationSNCDate = mdy(ViolationSNCDate))%>%
+                 mutate(EnforcementActionIssued = mdy(EnforcementActionIssued))%>%
+                 mutate(CaseClosed = mdy(CaseClosed))%>%
+                 select(-c(X1))
+
+## Creating Construction List 
+ConstructionList <- c("NPDES Construction Activity","Tidal Wetlands","Nontidal Wetlands","Sediment_Erosion")
+
+#### SAVING OUT PERMIT FILE ####
+#Saving directly to app folder 
+#write.csv(Permits, "ViolationApplication/www/Data/Permits_v2.csv", row.names = FALSE)
+
+#CombinedDataCleaned$InspectionDate <- as.Date(CombinedDataCleaned$InspectionDate, format="%m-%d-%Y")
+
+### Marker Logic ###
+### Markers Will have a MarkerShape, and a MarkerSize parameter ### 
+### Shape for A-D is based on this logic ### 
+# Compliance or Unknown = 0
+# Past status of Additional Investigation Required or Compliance Assistance Rendered = 1
+# Current status of Additional Investigation Required or Compliance Assistance Rendered = 2 
+# Past status of Noncompliance or Corrective Action = 6
+# Current Noncompliance or Corrective Action = 8
+### Shape 
+# A - 0 - No Issues - 
+# B - 1-7 - Minor Issues
+# C - 8-13 - Significant Issues 
+# D - 14+ - Repeast Non Compliace 
+# E - Resolved 
+# F - Unresolved 
+# G - Enforcement Action
+# ### Size 
+# 1 1-2 5px
+# 2 3-4 10px
+# 3 5-6 15px 
+# 4 7+ 20px 
+
+#SiteConditionList <- data.frame(unique(CombinedDataTesting$SiteCondition))
+
+CombinedDataTesting <- Permits %>%
+                       slice_sample(n = 500)
+
+
+SiteScoreMaker <- function(DF)
+{
+
+#Declaring Empty Site Set Data for Visualizing
+SiteData <- DF[0,]%>%
+  mutate(MarkerShape = "")%>%
+  mutate(MarkerSize = "")%>%
+  mutate(Construction = 0)
+print(SiteData)
+
+for(i in unique(DF$SiteNo))
+{
+
+## Selecting down to only the correct site ##
+SiteSet <- DF %>%
+           filter(SiteNo == i)%>%
+           arrange(desc(InspectionDate))
+
+## Compliance/Inspection Scoring ##
+if("C" %in% SiteSet$Type)
+{
+Score <- 0
+PastScore <- 0
+CurrentScore <- 0
+
+## For Past Status ## 
+## Only if there is more than one inspection report
+if(nrow(SiteSet) > 1)
+{
+  
+## Dropping most recent inspection report
+SiteSetPast <- SiteSet %>%
+           arrange(desc(InspectionDate))%>%
+           slice_tail(n = nrow(.)-1)
+
+## Calculating groups by inspection reporter
+SiteSetScoringPast <- count(SiteSetPast$SiteCondition) %>%
+                  mutate(value = 0)%>%
+                  mutate(TempScore = 0)%>%
+                  mutate(Score = 0)
+
+## Generating Scoring based layed out above 
+for(row in 1:nrow(SiteSetScoringPast))
+{
+  SiteSetScoringPast$value[row] <- ifelse(SiteSetScoringPast$x[row] == "Satisfactory/Compliance" || SiteSetScoringPast$x[row] == "UNKNOWN" || is.na(SiteSetScoringPast$x[row]),0,0)
+  SiteSetScoringPast$value[row] <- ifelse(SiteSetScoringPast$x[row] == "Additional Investigation Required" || SiteSetScoringPast$x[row] == "Compliance Assistance Rendered",1,SiteSetScoringPast$value[row])
+  SiteSetScoringPast$value[row] <- ifelse(SiteSetScoringPast$x[row] == "Noncompliance" || SiteSetScoringPast$x[row] == "Corrective Actions Required",6,SiteSetScoringPast$value[row])
+  
+  SiteSetScoringPast$TempScore[row] <- SiteSetScoringPast$value[row] * SiteSetScoringPast$freq[row]
+  SiteSetScoringPast$Score <- sum(SiteSetScoringPast$TempScore)
+}
+PastScore <- SiteSetScoringPast$Score[1]
+}
+
+
+## For Current Status, only selecting the first one 
+  SiteSetCurrent <- SiteSet %>%
+    arrange(desc(InspectionDate))%>%
+    slice_head()
+  
+  
+## Generating Current Score 
+  CurrentScore <- SiteSetCurrent %>%
+                           mutate(Score = ifelse(SiteCondition == "Satisfactory/Compliance" || SiteCondition == "UNKNOWN" || is.na(SiteCondition),0,0))%>%
+                           mutate(Score = ifelse(SiteCondition == "Additional Investigation Required" || SiteCondition == "Compliance Assistance Rendered",2,Score))%>%
+                           mutate(Score = ifelse(SiteCondition == "Noncompliance" || SiteCondition == "Corrective Actions Required",8,Score))%>%
+                           pull(Score)
+  
+  
+## Adding past and current score for total score 
+Score <- CurrentScore + PastScore
+
+
+#Converting from score to Marker catagory 
+SiteSet$MarkerShape <- ifelse(Score == 0,"A",NA)
+SiteSet$MarkerShape <- ifelse(Score >= 1 && Score <= 7,"B",SiteSet$MarkerShape[1])
+SiteSet$MarkerShape <- ifelse(Score >= 8 && Score <= 13,"C",SiteSet$MarkerShape[1])
+SiteSet$MarkerShape <- ifelse(Score >= 14,"D",SiteSet$MarkerShape[1])
+
+#Adding Marker Size
+SiteSet$MarkerSize <- ifelse(nrow(SiteSet) <= 2,1,0)
+SiteSet$MarkerSize <- ifelse(nrow(SiteSet) > 2,2,SiteSet$MarkerSize)
+SiteSet$MarkerSize <- ifelse(nrow(SiteSet) > 7,3,SiteSet$MarkerSize)
+SiteSet$MarkerSize <- ifelse(nrow(SiteSet) >= 10,4,SiteSet$MarkerSize)
+}
+
+
+### END INSPECTION/COMPLIANCE ###
+
+## Enforcement ##
+#Logic: If any Enforcement, then Type G
+if("E" %in% SiteSet$Type)
+{
+  SiteSet$Type <- "E"
+  SiteSet$MarkerShape <- "G"
+  SiteSet$MarkerSize <- 4
+}
+
+
+## Violation ##
+## Logic: If any Violation, then Resolved Violation (E), if no Resolved date, then Unresolved Violation(F)
+if("V" %in% SiteSet$Type)
+{
+SiteSet$Type <- "V"
+SiteSet$MarkerShape <- ifelse(is.na(SiteSet$ResolvedDate),"F","E")  
+SiteSet$MarkerSize <- 4
+}
+
+
+## Adding Total Inspection Count
+SiteSet$InspectionCount <- nrow(SiteSet)
+
+## Adding Construction Tag
+if(ConstructionList %in% SiteSet$InspectionType)
+{
+SiteSet$Construction <- 1
+print("ConstructionTest")
+}
+else
+{
+SiteSet
+}
+
+
+# ### Testing #### 
+## Comment out after 
+# if(nrow(SiteSet) > 1)
+# {
+# print(SiteSet$SiteCondition)
+# print(SiteSet$InspectionDate)
+# print(SiteSet$MarkerSize)
+# print(SiteSet$MarkerShape)
+# print(CurrentScore)
+# print(PastScore)
+# print(Score)
+# print("--------")
+# }
 # 
 
-# ViolationTest <- anti_join(Violation, GeoLocatedTrimmed, by = "Site.No")%>%
-#                   distinct(Site.No)
-# 
-#                 
-# ViolationTest2 <- anti_join(Violation, Compliance, by = "Site.No")%>%
+#Binding all the Site Data 
+SiteData <- rbind(SiteData,SiteSet)
+}
+
+
+# Adding tag for if its a construction site and making the file unique to each site ID
+SiteData <- SiteData %>%
+  distinct(SiteNo, .keep_all = TRUE)
+
+return(SiteData)
+}
+
+Results <- SiteScoreMaker(Permits)
+ResultsSF <- Results %>%
+          filter(!is.na(Latitude))%>%
+        filter(!is.na(Longitude))%>%
+        select(SiteNo,Latitude,Longitude)
+
+
+### Adding Watersheds ### 
+## Getting MD HUCS from MD Open Data Portal)
+MDHucUrl <- "https://geodata.md.gov/imap/rest/services/Hydrology/MD_Watersheds/FeatureServer/2/query?where=1%3D1&outFields=*&outSR=4326&f=json"
+MDHucSF <- read_sf(MDHucUrl)
+crsString <- "+proj=lcc +lat_1=39.45 +lat_2=38.3 +lat_0=37.66666666666666 +lon_0=-77 +x_0=400000 +y_0=0 +ellps=GRS80 +units=m +no_defs"
+ResultsSf <- st_read(ResultsSF,coords = c("Longitude", "Latitude"), crs = crsString)
+
+
+
+
+
+
+
+
+
+
+
+
+
+#### SAVING OUT FACILITIES FILE ####
+#Saving directly to app folder 
+write.csv(Results, "ViolationApplication/www/Data/Facilities_v4.csv", row.names = FALSE)
+
+
+
+
+
+
+
+
+
+
+
+### EXPLORING THE DATA ### 
+#Looking at counts for each catagory 
+MarkerShapeStats <- count(Results$MarkerShape)
+MarkerSizeStats <- count(Results$MarkerSize)
+
+PermitType <- count(Results$InspectionType)
+
+
+
+ResultsNoConstruction <- Results %>%
+                        filter(InspectionType != "NPDES Construction Activity")%>%
+                        filter(InspectionType != "Tidal Wetlands")%>%
+                        filter(InspectionType != "Nontidal Wetlands")%>%
+                        filter(InspectionType != "Sediment_Erosion")
+
+
+#Histogram 
+hist(Results$InspectionCount, breaks = 200, xlim = c(0,60))
+hist(ResultsNoConstruction$InspectionCount, breaks = 200, xlim = c(0,60))
+
+##Making some maps 
+SiteListMapping <- SiteList %>%
+                   filter(InspectionCount > 10)
+ggplot() +
+  geom_sf() +
+  geom_point(data = Results, aes(x = Longitude, y = Latitude), size = Results$MarkerSize, 
+             shape = 1, fill = "darkred") +
+  coord_sf(xlim = c(-80,-74.94427), ylim = c(36.984189, 40.84189), expand = FALSE)
+
+
+
+
+
+
+
+
 
 
 

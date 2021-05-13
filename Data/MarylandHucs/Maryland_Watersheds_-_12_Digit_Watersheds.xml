@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?><metadata>
+    <idinfo>
+        <citation>
+            <citeinfo>
+                <origin/>
+                <pubdate>19980101</pubdate>
+                <title>Maryland Watersheds - 12 Digit Watersheds</title>
+                <onlink>https://geodata.md.gov/imap/rest/services/Hydrology/MD_Watersheds/FeatureServer/2</onlink>
+            </citeinfo>
+        </citation>
+        <descript>
+            <abstract>This file (SWSHED12) is a statewide digital watershed file. It was created primarily for state and federal agency use. The watersheds define Strahler (Strahler 1952 p. 1120) third order stream drainage by contours on U.S. Geological Survey (USGS) 7.5 minute quadrangle map sheets. Some watersheds drainage areas were defined for streams less than third order and some large area watershed were split to maintain a maximum size of 15,000 acres. The watershed boundaries in this file were developed in a joint state and federal effort to create a consistent watershed file for use by all government agencies with an interest in Maryland's watersheds. The U.S. Natural Resources Conservation Service (NRCS) redefined the third order watersheds creating the HUA14 file. This file contains all of the HUA14 watersheds and some added watersheds to maintain water quality sampling sites. It was also used to create the Maryland Sub-Watershed file.The Department of Natural Resources makes no warranty, expressed or implied, as to the use or appropriateness of Spatial Data, and there are no warranties of merchantability or fitness for a particular purpose or use. The information contained in Spatial Data is from publicly available sources, but no representation is made as to the accuracy or completeness of Spatial Data. The Department of Natural Resources shall not be subject to liability for human error, error due to software conversion, defect, or failure of machines, or any material used in the connection with the machines, including tapes, disks, CD-ROMs or DVD-ROMs and energy. The Department of Natural Resources shall not be liable for any lost profits, consequential damages, or claims against the Department of Natural Resources by third parties. The liability of the Department of Natural Resources for damage regardless of the form of the action shall not exceed any distribution fees that may have been paid in obtaining Spatial Data.This is a MD iMAP hosted service layer. Find more information at https://imap.maryland.gov.Feature Service Layer Link:https://geodata.md.gov/imap/rest/services/Hydrology/MD_Watersheds/FeatureServer/2</abstract>
+            <purpose>Maryland Watersheds - 12 Digit Watersheds</purpose>
+        </descript>
+        <status>
+            <update>None planned</update>
+        </status>
+        <keywords>
+            <theme>
+                <themekt>None</themekt>
+                <themekey>Hydrology</themekey>
+                <themekey>Watersheds</themekey>
+                <themekey>8 Digit Watersheds</themekey>
+                <themekey>12 Digit Watersheds</themekey>
+                <themekey>HUC 11 Federal Watersheds</themekey>
+                <themekey>Chesapeake Bay</themekey>
+                <themekey>Coastal Zone</themekey>
+                <themekey>Vector</themekey>
+                <themekey>Dynamic</themekey>
+                <themekey>WFS</themekey>
+                <themekey>WMS</themekey>
+                <themekey>HYDR</themekey>
+                <themekey>DNR</themekey>
+                <themekey>Department of Natural Resources</themekey>
+                <themekey>Maryland</themekey>
+                <themekey>MD</themekey>
+                <themekey>MD iMAP</themekey>
+                <themekey>KML</themekey>
+            </theme>
+        </keywords>
+        <accconst>None</accconst>
+        <useconst>The Spatial Data, and the information therein, (collectively the "Data") is provided "as is" without warranty of any kind, either expressed, implied, or statutory. The user assumes the entire risk as to quality and performance of the Data. No guarantee of accuracy is granted, nor is any responsibility for reliance thereon assumed. In no event shall the State of Maryland be liable for direct, indirect, incidental, consequential or special damages of any kind. The State of Maryland does not accept liability for any damages or misrepresentation caused by inaccuracies in the Data or as a result to changes to the Data, nor is there responsibility assumed to maintain the Data in any manner or form. The Data can be freely distributed as long as the metadata entry is not modified or deleted. Any data derived from the Data must acknowledge the State of Maryland in the metadata.</useconst>
+        <datacred>MD iMAP, DNR, MDE</datacred>
+    </idinfo>
+    <metainfo>
+        <metd>20180213</metd>
+        <metc>
+            <cntinfo>
+                <!--no contact person or organization name available-->
+            </cntinfo>
+        </metc>
+        <metstdn>FGDC Content Standard for Digital Geospatial Metadata</metstdn>
+        <metstdv>FGDC-STD-001-1998</metstdv>
+        <mettc>local time</mettc>
+    </metainfo>
+</metadata>
