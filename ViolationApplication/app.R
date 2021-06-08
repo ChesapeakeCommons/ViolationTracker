@@ -15,15 +15,18 @@ ui <- fluidPage(
   useShinyjs(),
     
 
+
 mainPanel(
   checkboxInput("Construction", "Construction Related Permits"),
-  actionButton("showSidebar", "Show Table"),
-  actionButton("showInfo", "Info"),
+  
+  actionButton("showInfo", "?"),
+  uiOutput("StatsText"),
   leafletOutput("Map", height = 500, width = 750),
 ),
 
 hidden(div(id = "Table",sidebarPanel(width = 4,
   htmlOutput("TableTitle"),
+  actionButton("showSidebar", "Show Table"),
   tableOutput("Table"),
   textOutput("TableIndex"),
   actionButton("Back","Back"),
@@ -40,7 +43,7 @@ server <- function(input, output, session) {
 Facilities <- read.csv("www/Data/Facilities_v5.csv", stringsAsFactors = FALSE)
 Permits <- read.csv("www/Data/Permits_v2.csv", stringsAsFactors = FALSE)
 ColumnSelect <- read_csv("www/Data/ColumnSelectSheet_v1.csv")
-MarylandHucs <- suppressMessages(rgdal::readOGR("www/Data/Huc8s_v3.geojson", verbose = TRUE))
+MarylandHucs <- suppressMessages(rgdal::readOGR("www/Data/MarylandHucs_v4.geojson", verbose = TRUE))
           
 
 FacilitiesReactive <- reactiveValues(df = data.frame(Facilities))
@@ -50,7 +53,7 @@ PermitPage <- reactiveValues(X = as.numeric(1))
 ### ICON FUNCTION ### 
 IconMaker <- function(Type, Size)
 {
-Icon <- makeIcon(iconUrl = paste("www/Images/Icons/",Type,".png", sep = ""), iconWidth = Size*10, iconHeight = Size*10)
+Icon <- makeIcon(iconUrl = paste("www/Images/Markers/",Type,".png", sep = ""), iconWidth = Size*10, iconHeight = Size*10)
 return(Icon)
 }
 
@@ -60,9 +63,10 @@ output$Map <- renderLeaflet({
 leaflet("Map")%>%
             setView(lng = -76.641273, lat =39.045753, zoom = 8)%>%
             addProviderTiles("CartoDB.VoyagerLabelsUnder", group = "Streets")%>%
+            hideGroup("Watersheds")%>%
             addMapPane("polygons", zIndex = 210)%>%
-            addPolygons(data = MarylandHucs, color = "#b3b3b3", weight = 3, group = "Watersheds", options = pathOptions(pane = "polygons"), label = paste(MarylandHucs$mde8name, "Watershed", sep = " "))%>%
-            addLayersControl(baseGroups = c("Inspection","Violation", "Enforcement"), overlayGroups = c("Watersheds"), options = layersControlOptions(collapsed = FALSE))%>%
+            addPolygons(data = MarylandHucs, color = "#b3b3b3", weight = 1, group = "Watersheds", options = pathOptions(pane = "polygons"), label = paste(MarylandHucs$mde8name, "Watershed", sep = " "))%>%
+            addLayersControl(overlayGroups = c("Inspection","Violation", "Enforcement","Watersheds"), options = layersControlOptions(collapsed = FALSE))%>%
             addSearchOSM(options = searchOptions(autoCollapse = TRUE, minLength = 2,hideMarkerOnCollapse = TRUE))
 
   # options = pathOptions(pane = "polygons"),
@@ -124,11 +128,27 @@ observeEvent(input$Map_marker_click, ignoreNULL = FALSE,
 
 InfoModal <- modalDialog(
 title = HTML("<b> Chesapeake Legal Alliance's Violation Tracker </b>"),
-HTML("<b> Instructions: </b>"),
-HTML("Text Text Text Text Text"),
+HTML("<b> Quick Start Instructions: </b>"),
 HTML("<br>"),
-HTML("<b> About: </b>"),
-HTML("Text Text Text Text Text"),
+HTML("<li>"),
+HTML("Clicking a map cluster will reveal additional clusters or individual facilities."),
+HTML("<br>"),
+HTML("<li>"),
+HTML("Click a facility to open an information table with its permit history."),
+HTML("<br>"),
+HTML("<li>"),
+HTML("Use the Legend to control whether inspections, enforcement, or violations appear on the map."),
+HTML("<br>"),
+HTML("<li>"),
+HTML("To find more information, search the site number in the"),
+tags$a(href="http://mdewin64.mde.state.md.us/ECollaboration/SearchPortal.aspx", "Open MDE ortal."),
+HTML("<br>"),
+HTML("<li>"),
+HTML("Use the Basemap Control to add or remove watershed boundaries, environmental justice communities, or basemaps."),
+HTML("<br>"),
+HTML("<br>"),
+HTML("<b> For Additional Instructions and More Information About This Tracker Tool: </b>"),
+tags$a(href="https://www.chesapeakelegal.org/", "Click Here."),
 
 easyClose = TRUE,
 footer = NULL,
@@ -211,7 +231,7 @@ TableContentMaker <- function(DF,Id)
     mutate_if(is.Date, ~ format(.,"%B, %d, %Y"))%>%
     mutate(CityStateZip = str_replace_all(CityStateZip, ",", ", "))
 
-  PermitType <- TableContent$Type
+    PermitType <- TableContent$Type
   
   ## Transposing to Long
   TableContent <- as.data.frame(t(TableContent))
@@ -230,12 +250,8 @@ TableContentMaker <- function(DF,Id)
   #Adding ':' to the content names
   Combined$NewName <-sub("$", ":", Combined$NewName)
 
-  
-  
   return(Combined)
 }
-
-
 
 ## Render Table 
 # Might switch this to a different format for stylistic reasons later on 5.6.2021
@@ -266,6 +282,52 @@ output$Table <- renderTable({
  spacing = "xs", 
  width = "190px")
 
+
+
+output$StatsText<- renderUI({
+
+# Count of Sites 
+SiteCount <- Facilities %>%
+             distinct(SiteNo)%>%
+             tally()
+
+# Count of Inspecitons 
+InspectionCount <- nrow(Permits)
+
+#NonCompliance Count 
+NonCompliance <- Permits %>%
+                filter(SiteCondition == "Noncompliance")%>%
+                tally()
+
+#Unresolved Sig Violation
+SignificantViolation <- Facilities %>%
+                        filter(MarkerShape == "F")%>%
+                        tally()
+                      
+#Enforcement 
+Enforcement <- Facilities %>%
+               filter(MarkerShape == "G")%>%
+               tally()
+
+
+
+
+                      
+
+tagList(
+  paste("Total Inspection Reports:", InspectionCount),
+  HTML("<br>"),
+  paste("Number of Non Compliance Inspection Reports:", NonCompliance),
+  HTML("<br>"),
+  paste("Total Facility Count:", SiteCount),
+  HTML("<br>"),
+  paste("Facilties with a current unresolved Significant Violation:", SignificantViolation),
+  HTML("<br>"),
+  paste("Facilities with past or current Enforcement Action taken:", Enforcement),
+  
+)
+
+})
 
 }
 
