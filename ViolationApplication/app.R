@@ -24,8 +24,16 @@ mainPanel(
   leafletOutput("Map", height = 500, width = 750),
 ),
 
+tags$head(
+  tags$style(
+    HTML("td:first-child, td:nth-child(1){ font-weight: bold }")
+  )
+),
+
 hidden(div(id = "Table",sidebarPanel(width = 4,
-  htmlOutput("TableTitle"),
+  htmlOutput("SiteNo"),
+  htmlOutput("InspectionType"),
+  imageOutput("MarkerIcon", width= '100px', height= '30px'),
   actionButton("showSidebar", "Show Table"),
   tableOutput("Table"),
   textOutput("TableIndex"),
@@ -51,7 +59,7 @@ PermitsReactive <- reactiveValues(df = data.frame())
 PermitPage <- reactiveValues(X = as.numeric(1))
 
 ### ICON FUNCTION ### 
-IconMaker <- function(Type, Size)
+MapIconMaker <- function(Type, Size)
 {
 Icon <- makeIcon(iconUrl = paste("www/Images/Markers/",Type,".png", sep = ""), iconWidth = Size*10, iconHeight = Size*10)
 return(Icon)
@@ -99,11 +107,9 @@ Violation <- Facilities %>%
 leafletProxy("Map")%>%
 clearMarkers()%>%
 clearMarkerClusters()%>%
-addMarkers(data = Compliance, group = "Inspection", lng = ~Longitude, lat = ~Latitude, layerId = ~SiteNo, label = ~ paste("Site #:",SiteNo), icon = ~IconMaker(MarkerShape,MarkerSize), clusterOptions = markerClusterOptions(maxClusterRadius = 50, zoomToBoundsOnClick = TRUE, showCoverageOnHover = FALSE))%>%
-addMarkers(data = Violation, group = "Violation", lng = ~Longitude, lat = ~Latitude, layerId = ~SiteNo, label = ~ paste("Site #:",SiteNo), icon = ~IconMaker(MarkerShape,MarkerSize), clusterOptions = markerClusterOptions(maxClusterRadius = 100, showCoverageOnHover = FALSE))%>%
-addMarkers(data = Enforcement, group = "Enforcement", lng = ~Longitude, lat = ~Latitude, layerId = ~SiteNo, label = ~ paste("Site #:",SiteNo), icon = ~IconMaker(MarkerShape,MarkerSize), clusterOptions = markerClusterOptions(maxClusterRadius = 100, zoomToBoundsOnClick = TRUE, showCoverageOnHover = FALSE))
-
-           
+addMarkers(data = Compliance, group = "Inspection", lng = ~Longitude, lat = ~Latitude, layerId = ~SiteNo, label = ~ paste("Site #:",SiteNo), icon = ~MapIconMaker(MarkerShape,MarkerSize), clusterOptions = markerClusterOptions(maxClusterRadius = 50, zoomToBoundsOnClick = TRUE, showCoverageOnHover = FALSE))%>%
+addMarkers(data = Violation, group = "Violation", lng = ~Longitude, lat = ~Latitude, layerId = ~SiteNo, label = ~ paste("Site #:",SiteNo), icon = ~MapIconMaker(MarkerShape,MarkerSize), clusterOptions = markerClusterOptions(maxClusterRadius = 100, showCoverageOnHover = FALSE))%>%
+addMarkers(data = Enforcement, group = "Enforcement", lng = ~Longitude, lat = ~Latitude, layerId = ~SiteNo, label = ~ paste("Site #:",SiteNo), icon = ~MapIconMaker(MarkerShape,MarkerSize), clusterOptions = markerClusterOptions(maxClusterRadius = 100, zoomToBoundsOnClick = TRUE, showCoverageOnHover = FALSE))
 })
 
 ## Changing the PermitReactive to represent only the selected permits
@@ -165,11 +171,44 @@ observeEvent(input$showSidebar, {
   shinyjs::toggle(id = "Table")
 })
 
+## Inspection Type Text
+output$InspectionType <- renderText({
+  if(nrow(PermitsReactive$df) != 0)
+  {
+  Type <- PermitsReactive$df %>%
+    arrange(desc(InspectionDate))%>%
+    slice(PermitPage$X)%>%
+    pull(Type)
+  
+  if(Type == "C")
+  {
+  ReportType <- "Inspection Report"
+  }
+  if(Type == "E")
+  {
+    ReportType <- "Enforcement Report"
+  }
+  if(Type == "V")
+  {
+    ReportType <- "Violation Report"
+  }
+  ReportType <- paste("<b>",ReportType, "</b>")
+
+  }
+  return(ReportType)
+})
+
+output$SiteNo <- renderText({
+req(input$Map_marker_click$id)
+SiteNo <- paste("<b>","Site No:",input$Map_marker_click$id, "</b>")
+return(SiteNo)
+})
+
 ## Next Button for Table 
 observeEvent(input$Next, {
   if(PermitPage$X < nrow(PermitsReactive$df))
   {
-  PermitPage$X <- PermitPage$X + 1
+    PermitPage$X <- PermitPage$X + 1
   }
 })
 
@@ -181,41 +220,13 @@ observeEvent(input$Back, {
   }
 })
 
-
 ## Table Index Text 
 output$TableIndex <- renderText({
   if(nrow(PermitsReactive$df) != 0)
   {
-Index <- paste(PermitPage$X, "of", nrow(PermitsReactive$df))
-return(Index)
+    Index <- paste(PermitPage$X, "of", nrow(PermitsReactive$df))
+    return(Index)
   }    
-})
-
-## Table Title
-output$TableTitle <- renderText({
-  if(nrow(PermitsReactive$df) != 0)
-  {
-  Type <- PermitsReactive$df %>%
-    arrange(desc(InspectionDate))%>%
-    slice(PermitPage$X)%>%
-    pull(Type)
-  
-  if(Type == "C")
-  {
-  Text <- "Inspection Report"
-  }
-  if(Type == "E")
-  {
-  Text <- "Enforcement Report"
-  }
-  if(Type == "V")
-  {
-    Text <- "Violation Report"
-  }
-
-  Text <- paste("<b>",Text, "</b>")
-  return(Text)
-  }
 })
 
 TableContentMaker <- function(DF,Id)
@@ -279,8 +290,46 @@ output$Table <- renderTable({
  caption.placement = getOption("xtable.caption.placement", "top"), 
  include.rownames=FALSE,
  include.colnames=FALSE,
- spacing = "xs", 
+ spacing = "s", 
  width = "190px")
+
+output$TableText <- renderUI({
+  PermitPrint <- TableContentMaker(PermitsReactive$df, PermitPage$X)
+  
+  ## Adding Watershed Names from the facilities file
+  V1 <- FacilitiesReactive$df %>%
+    filter(SiteNo == input$Map_marker_click$id)%>%
+    select(mde8name)%>%
+    pull()
+  
+  NewName <- "Watershed:"
+  
+  Watershed <- data.frame(NewName, V1)
+  
+  FullPermitPrint <- rbind(Watershed,PermitPrint)
+})
+
+
+#Marker Icon for showing in the render table 
+output$MarkerIcon <- renderImage({
+  req(input$Map_marker_click)
+  
+  MarkerShape <- FacilitiesReactive$df %>%
+                filter(SiteNo == input$Map_marker_click$id)%>%
+                pull(MarkerShape)
+
+  MarkerLink <- paste0("www/Images/Markers/",MarkerShape,".png", sep = "")
+  list(src=MarkerLink, align = "right", width = 50, height = 50)
+  
+},deleteFile = FALSE)
+
+
+
+
+
+
+
+
 
 
 
