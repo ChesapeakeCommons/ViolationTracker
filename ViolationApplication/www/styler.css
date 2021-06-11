@@ -1,0 +1,220 @@
+ @import url("https://fonts.googleapis.com/css?family=Open+Sans");
+
+
+body {
+  min-height: 100vh;
+  min-height: -webkit-fill-available;
+  
+}
+html {
+  height: -webkit-fill-available;
+  min-height: 100%;
+}
+
+
+body{
+    background-color: #000000;
+    
+      background-image: url('./images/loading-background.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+/*background-color: #021D49;
+  font-family: sofia-pro, sans-serif !important;
+  */
+  position:fixed;
+  width: 100vw;
+  font-family: "Open Sans" !important;
+  font-size: 14px;
+  /*   background-image: url('./images/cwa-leafmap-background.png');
+   background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+*/
+}
+
+
+.container-fluid{
+  padding: 0 0 0 0;
+}
+
+/*START HEADER STYLES*/
+#header {
+  width: 100%;
+  height: 75px;
+  min-width:420px;
+  background-color: #104c4e;
+  
+  font-family: Alice, sans-serif !important;
+  
+  border:0px solid red;
+  margin: 0 auto;
+    display: flex;
+   flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content:  space-between;
+  
+  padding: 10px 10px 10px 10px;
+
+}
+#header-title {
+  
+/*  float: left;
+  */
+  border: 0px solid green;
+  width: 220px;
+  height: 60px ;
+  padding: 0 0 0 0;
+  margin: 0 0 0 0;
+  
+  font-size: 40px;
+  color : #ffffff;
+  line-height: 22px;
+  
+  align-self: flex-start;
+  
+  background-image: url('./images/cla-logo_v001.png');
+    background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  
+}
+#title {
+  color: white;
+  font-size: 30px;
+  margin-top: 10px;
+  border: 1px solid red;
+  
+}
+
+#header-logo {
+
+  border: 0px solid green;
+  width: 60px;
+  height: 60px;
+  margin-top: 5px;
+  align-self: flex-end;
+
+   background-image: url('./images/James+River+Association_Gradient_rgb.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  
+  
+}
+/*END HEADER STYLES*/
+
+
+#Map{
+  position: fixed !important;
+    top: 75px !important;
+    bottom: 0px !important;
+}
+
+
+
+
+
+
+.leaflet-control-layers {
+  
+   font-family: "Open Sans" !important; 
+}
+
+
+
+
+
+.leaflet-control-layers-selector{
+   float: left;
+  display: inline-block;
+  border: 0px solid red;
+  
+}
+
+
+.legend-item {
+  position: relative;
+  border: 0px solid red;
+  float: left;
+  display: inline-block;
+    width: 205px;
+    clear: none;
+}
+
+.legend-sub-items-container{
+  
+  position: relative;
+  border: 0px solid red;
+  float: left;
+  display: inline-block;
+  margin-left: 20px;
+  width: calc(100% - 20px);
+}
+.legend-sub-items-container > div,
+.legend-sub-items-container > img {
+    position: relative;
+  border: 0px solid red;
+  float: left;
+  display: inline-block;
+  
+}
+.legend-sub-items-container > img{
+  clear: left;
+  max-width: 20px;
+  max-height: 20px;
+}
+
+.legend-sub-items-container > .size-chart{
+  background-image: url('./Images/size-chart.png');
+    background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  height: 56px;
+  width: 150px;
+}
+
+.legend-header {
+  
+  text-align:center;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.leaflet-control-layers{
+  width: 270px;
+  height: 400px;
+}
+
+.leaflet-control-layers-base{
+  position: absolute;
+  display: block;
+  top: 300px;
+  background-color: none;
+  width: 220px !important;
+}
+
+
+.leaflet-control-layers-overlays{
+  position: absolute;
+  display:block;
+  top: -5px;
+  background-color: none;
+  width: 220px !important;
+
+}
+
+.leaflet-control-layers-separator{
+   position: absolute;
+  display: block;
+  top: 285px;
+  background-color: none;
+  width: 260px !important;
+}
+
+
+.well {
+  width: 450px !important;
+  margin-left: -100px;
+}
+

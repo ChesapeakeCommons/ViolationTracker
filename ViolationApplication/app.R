@@ -12,36 +12,58 @@ library(rgdal)
 
 # Define UI for Application 
 ui <- fluidPage(
+  theme = "styler.css",
   useShinyjs(),
     
 
-
-mainPanel(
-  checkboxInput("Construction", "Construction Related Permits"),
+  #Start Header
+  div(id = "header",
+      HTML("<a href='https://www.chesapeakelegal.org/' target='blank'>"),
+         div(id = "header-title"),
+      HTML("</a>"),
+      div(id = "title",
+          HTML("Violation Tracker")
+      ),
+      HTML("<a href='https://www.jamesriverwatch.org/' target='blank' style='margin-top: -8px;'>"),
+         div(id = "header-logo" ),
+      HTML("</a>")
+      
+  ),      
+  #END Header
   
-  actionButton("showInfo", "?"),
-  uiOutput("StatsText"),
-  leafletOutput("Map", height = 500, width = 750),
-),
+  
 
-tags$head(
-  tags$style(
-    HTML("td:first-child, td:nth-child(1){ font-weight: bold }")
+  mainPanel(
+    checkboxInput("Construction", "Construction Related Permits"),
+    
+    actionButton("showInfo", "?"),
+    uiOutput("StatsText"),
+    leafletOutput("Map", height = 'calc(100vh - 75px)', width = '100%'),
+  ),
+  
+  tags$head(
+    tags$style(
+      HTML("td:first-child, td:nth-child(1){ font-weight: bold }")
+    )
+  ),
+  
+  hidden(div(id = "Table",sidebarPanel(width = 4,
+    htmlOutput("SiteNo"),
+    htmlOutput("InspectionType"),
+    imageOutput("MarkerIcon", width= '100px', height= '30px'),
+    actionButton("showSidebar", "Show Table"),
+    tableOutput("Table"),
+    textOutput("TableIndex"),
+    actionButton("Back","Back"),
+    actionButton("Next", "Next")
+      ))),
+  
   )
-),
+    
 
-hidden(div(id = "Table",sidebarPanel(width = 4,
-  htmlOutput("SiteNo"),
-  htmlOutput("InspectionType"),
-  imageOutput("MarkerIcon", width= '100px', height= '30px'),
-  actionButton("showSidebar", "Show Table"),
-  tableOutput("Table"),
-  textOutput("TableIndex"),
-  actionButton("Back","Back"),
-  actionButton("Next", "Next")
-    ))),
+ 
 
-)
+
 
 # Define server logic
 server <- function(input, output, session) {
@@ -65,6 +87,38 @@ Icon <- makeIcon(iconUrl = paste("www/Images/Markers/",Type,".png", sep = ""), i
 return(Icon)
 }
 
+groups <- c("Inspection" <- "<div class='legend-item'>
+                                <div>Inspection History</div>
+                                <div class='legend-sub-items-container'>
+                                  <img src='./Images/Markers/A.png' /><div> No Issues</div>
+                                  <img src='./Images/Markers/B.png' /><div> Minor Issues</div>
+                                  <img src='./Images/Markers/C.png' /><div> Significant Issues</div>
+                                  <img src='./Images/Markers/D.png' /><div> Repeat Non-Compliance</div>
+                                </div>
+                                <div>Inspection Count</div>
+                                <div class='legend-sub-items-container'>
+                                  <div class='size-chart' ><div>
+                                
+                                </div>
+                              </div>",
+            
+            "Violation" <- "<div class='legend-item'>
+                                <div>Violation History</div>
+                                <div class='legend-sub-items-container'>
+                                    <img src='./Images/Markers/E.png' /><div> Resolved</div>
+                                    <div class='legend-sub-items-container' style='margin-left: 10px; width: 95px; float:left;'><img ' src='./Images/Markers/F.png' /><div> Unresolved</div>
+                                </div>
+                            </div>",
+            
+            "Enforcement" <- "<div class='legend-item'>
+                                <div>Enforcement Action</div>
+                                <div class='legend-sub-items-container'>
+                                    <img src='./Images/Markers/G.png' />
+                                   
+                                </div>
+                              </div>"
+            )
+
 
 ### MAP ### 
 output$Map <- renderLeaflet({
@@ -74,7 +128,19 @@ leaflet("Map")%>%
             hideGroup("Watersheds")%>%
             addMapPane("polygons", zIndex = 210)%>%
             addPolygons(data = MarylandHucs, color = "#b3b3b3", weight = 1, group = "Watersheds", options = pathOptions(pane = "polygons"), label = paste(MarylandHucs$mde8name, "Watershed", sep = " "))%>%
-            addLayersControl(overlayGroups = c("Inspection","Violation", "Enforcement","Watersheds"), options = layersControlOptions(collapsed = FALSE))%>%
+            addLayersControl(
+             
+              baseGroups = c("Streets", "Watersheds"),
+              overlayGroups = groups, 
+              position =c("bottomleft"), 
+              options = layersControlOptions(collapsed = FALSE))%>%
+            htmlwidgets::onRender("
+                function() {
+                    $('.leaflet-control-layers-overlays').prepend('<label class=\"legend-header\">Legend</label>');
+                     $('.leaflet-control-layers-base').prepend('<label class=\"legend-header\">Basemaps</label>');
+                }     
+            ")%>%
+            
             addSearchOSM(options = searchOptions(autoCollapse = TRUE, minLength = 2,hideMarkerOnCollapse = TRUE))
 
   # options = pathOptions(pane = "polygons"),
