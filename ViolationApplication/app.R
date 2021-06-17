@@ -34,11 +34,15 @@ ui <- fluidPage(
   
 
   mainPanel(
-    checkboxInput("Construction", "Construction Related Permits"),
     
-    actionButton("showInfo", "?"),
-    uiOutput("StatsText"),
     leafletOutput("Map", height = 'calc(100vh - 75px)', width = '100%'),
+    
+    div(id = 'stats-container',
+      checkboxInput("Construction", "Construction Related Permits"),
+      
+      actionButton("showInfo", "?"),
+      uiOutput("StatsText"),
+    )
   ),
   
   tags$head(
@@ -356,8 +360,9 @@ output$Table <- renderTable({
  caption.placement = getOption("xtable.caption.placement", "top"), 
  include.rownames=FALSE,
  include.colnames=FALSE,
- spacing = "s", 
- width = "190px")
+ spacing = "s" 
+# width = "190px"
+)
 
 output$TableText <- renderUI({
   PermitPrint <- TableContentMaker(PermitsReactive$df, PermitPage$X)
