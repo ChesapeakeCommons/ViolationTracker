@@ -242,6 +242,11 @@ body{
   position: absolute;
   bottom: 0;
 }
+
+#StatsText{
+  font-family: "Open Sans" !important;
+}
+
 #stats-container{
   position: absolute;
   display: block;
@@ -251,6 +256,16 @@ body{
   height: 300px;
   background-color: white;
   
+  padding: 6px 10px 6px 6px;
+  color: #333;
+  background: #fff;
+  border-radius: 5px;
+  border: 2px solid rgba(0,0,0,0.2);
+        
+  margin-left: 10px;
+  margin-bottom: 10px;
+  
+  font-family: "Open Sans" !important;
   
 }
 

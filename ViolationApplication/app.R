@@ -26,7 +26,9 @@ ui <- fluidPage(
       ),
       HTML("<a href='https://www.jamesriverwatch.org/' target='blank' style='margin-top: -8px;'>"),
          div(id = "header-logo" ),
-      HTML("</a>")
+      HTML("</a>"),
+      
+      actionButton("showInfo", "?"),
       
   ),      
   #END Header
@@ -40,7 +42,7 @@ ui <- fluidPage(
     div(id = 'stats-container',
       checkboxInput("Construction", "Construction Related Permits"),
       
-      actionButton("showInfo", "?"),
+      
       uiOutput("StatsText"),
     )
   ),
@@ -135,13 +137,14 @@ leaflet("Map")%>%
             addLayersControl(
              
               baseGroups = c("Streets", "Watersheds"),
-              overlayGroups = groups, 
+           #   overlayGroups = groups, 
+              overlayGroups = c("Inspection", "Violation" ,"Enforcement"), 
               position =c("bottomleft"), 
               options = layersControlOptions(collapsed = FALSE))%>%
             htmlwidgets::onRender("
                 function() {
                     $('.leaflet-control-layers-overlays').prepend('<label class=\"legend-header\">Legend</label>');
-                     $('.leaflet-control-layers-base').prepend('<label class=\"legend-header\">Basemaps</label>');
+                    $('.leaflet-control-layers-base').prepend('<label class=\"legend-header\">Basemaps</label>');
                 }     
             ")%>%
             
