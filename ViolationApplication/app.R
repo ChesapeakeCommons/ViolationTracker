@@ -137,16 +137,51 @@ leaflet("Map")%>%
             addLayersControl(
              
               baseGroups = c("Streets", "Watersheds"),
-           #   overlayGroups = groups, 
+  #           overlayGroups = groups, 
               overlayGroups = c("Inspection", "Violation" ,"Enforcement"), 
               position =c("bottomleft"), 
               options = layersControlOptions(collapsed = FALSE))%>%
-            htmlwidgets::onRender("
+            htmlwidgets::onRender(paste("
                 function() {
                     $('.leaflet-control-layers-overlays').prepend('<label class=\"legend-header\">Legend</label>');
                     $('.leaflet-control-layers-base').prepend('<label class=\"legend-header\">Basemaps</label>');
+                    
+                    $( \"span:contains('Inspection')\" ).html(  \" ",
+                    "<div class='legend-item'>",
+                                "<div>Inspection History</div>",
+                                "<div class='legend-sub-items-container'>",
+                                  "<img src='./Images/Markers/A.png' /><div> No Issues</div>",
+                                  "<img src='./Images/Markers/B.png' /><div> Minor Issues</div>",
+                                  "<img src='./Images/Markers/C.png' /><div> Significant Issues</div>",
+                                  "<img src='./Images/Markers/D.png' /><div> Repeat Non-Compliance</div>",
+                                "</div>",
+                                "<div>Inspection Count</div>",
+                                "<div class='legend-sub-items-container'>",
+                                  "<div class='size-chart' ><div>",
+                                
+                                "</div>",
+                              "</div> \"  );
+                              
+                     $( \"span:contains('Violation')\" ).html(  \" ",
+                          "<div class='legend-item'>",
+                            "<div>Violation History</div>",
+                            "<div class='legend-sub-items-container'>",
+                            "<img src='./Images/Markers/E.png' /><div> Resolved</div>",
+                            "<div class='legend-sub-items-container' style='margin-left: 10px; width: 95px; float:left;'><img ' src='./Images/Markers/F.png' /><div> Unresolved</div>",
+                                      "</div>",
+                                 
+                    
+                            "  </div>\"  );
+                            
+                       $( \"span:contains('Enforcement')\" ).html(  \" ",
+                          "<div class='legend-item'>",
+                            "<div>Enforcement Action</div>",
+                            "<div class='legend-sub-items-container'>",
+                              "<img src='./Images/Markers/G.png' />",
+                            "</div>",
+                       "  </div>\"  );
                 }     
-            ")%>%
+            "))%>%
             
             addSearchOSM(options = searchOptions(autoCollapse = TRUE, minLength = 2,hideMarkerOnCollapse = TRUE))
 
