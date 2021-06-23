@@ -69,6 +69,7 @@ ui <- fluidPage(
                           <div class='table-header'>
                      "),          
                 imageOutput("MarkerIcon", width= '50px', height= '50px'),
+                textOutput("MarkerIconText"),
                 textOutput("SiteNo"),          
                 textOutput("InspectionType"),          
                 
@@ -81,11 +82,12 @@ ui <- fluidPage(
                   
                   
                 
-                actionButton("showSidebar", "Show Table"),
+                
                   tableOutput("Table"),
                   textOutput("TableIndex"),
                   actionButton("Back","Back"),
                   actionButton("Next", "Next"),
+                 actionButton("showSidebar", "Hide Table"),
                 
                 HTML("</div>
                   </div>"),  
@@ -95,11 +97,6 @@ ui <- fluidPage(
   
   )
     
-
- 
-
-
-
 # Define server logic
 server <- function(input, output, session) {
   
@@ -109,11 +106,13 @@ Facilities <- read.csv("www/Data/Facilities_v5.csv", stringsAsFactors = FALSE)
 Permits <- read.csv("www/Data/Permits_v2.csv", stringsAsFactors = FALSE)
 ColumnSelect <- read_csv("www/Data/ColumnSelectSheet_v1.csv")
 MarylandHucs <- suppressMessages(rgdal::readOGR("www/Data/MarylandHucs_v4.geojson", verbose = TRUE))
-          
-
 FacilitiesReactive <- reactiveValues(df = data.frame(Facilities))
 PermitsReactive <- reactiveValues(df = data.frame())
 PermitPage <- reactiveValues(X = as.numeric(1))
+TypeName <- c("No Issues", "Minor Issues", "Significant Issues","Repeat Non Compliance","Resolved Violation","Unresolved Violation","Enforcement Action")
+TypeCode <- c("A","B","C","D","E","F","G")
+MarkerType <- data.frame(TypeName,TypeCode)
+
 
 ### ICON FUNCTION ### 
 MapIconMaker <- function(Type, Size)
@@ -121,7 +120,6 @@ MapIconMaker <- function(Type, Size)
 Icon <- makeIcon(iconUrl = paste("www/Images/Markers/",Type,".png", sep = ""), iconWidth = Size*10, iconHeight = Size*10)
 return(Icon)
 }
-
 
 
 ### MAP ### 
@@ -134,9 +132,9 @@ leaflet("Map")%>%
             addPolygons(data = MarylandHucs, color = "#b3b3b3", weight = 1, group = "Watersheds", options = pathOptions(pane = "polygons"), label = paste(MarylandHucs$mde8name, "Watershed", sep = " "))%>%
             addLayersControl(
              
-              baseGroups = c("Streets", "Watersheds"),
+              baseGroups = c("Streets"),
   #           overlayGroups = groups, 
-              overlayGroups = c("Inspection", "Violation" ,"Enforcement"), 
+              overlayGroups = c("Inspection", "Violation" ,"Enforcement","Watersheds"), 
               position =c("topleft"), 
               options = layersControlOptions(collapsed = FALSE))%>%
             htmlwidgets::onRender(paste("
@@ -256,7 +254,7 @@ HTML("Use the Legend to control whether inspections, enforcement, or violations 
 HTML("<br>"),
 HTML("<li>"),
 HTML("To find more information, search the site number in the"),
-tags$a(href="http://mdewin64.mde.state.md.us/ECollaboration/SearchPortal.aspx", "Open MDE ortal."),
+tags$a(href="http://mdewin64.mde.state.md.us/ECollaboration/SearchPortal.aspx", "Open MDE portal."),
 HTML("<br>"),
 HTML("<li>"),
 HTML("Use the Basemap Control to add or remove watershed boundaries, environmental justice communities, or basemaps."),
@@ -273,7 +271,6 @@ footer = NULL,
 observeEvent(input$showInfo, {
 showModal(InfoModal)
 })
-
 
 ## Sidebar Toggles 
 observeEvent(input$showSidebar, {
@@ -302,9 +299,13 @@ output$InspectionType <- renderText({
     ReportType <- "Violation Report"
   }
   ReportType <- paste("",ReportType, "")
-
+  }
+  else
+  {
+  ReportType <- "Select a Location"
   }
   return(ReportType)
+  
 })
 
 output$SiteNo <- renderText({
@@ -435,13 +436,21 @@ output$MarkerIcon <- renderImage({
 
 
 
+output$MarkerIconText <- renderText({
+  req(input$Map_marker_click)
+  
+  MarkerShape <- FacilitiesReactive$df %>%
+    filter(SiteNo == input$Map_marker_click$id)%>%
+    pull(MarkerShape)
+  
+  MarkerIconText <- MarkerType %>%
+                    filter(TypeCode == MarkerShape)%>%
+                    select(TypeName)%>%
+                    pull()%>%
+                    as.character()
+  
 
-
-
-
-
-
-
+})
 
 output$StatsText<- renderUI({
 
@@ -467,12 +476,6 @@ SignificantViolation <- Facilities %>%
 Enforcement <- Facilities %>%
                filter(MarkerShape == "G")%>%
                tally()
-
-
-
-
-                      
-
 tagList(
   HTML("<b>Inspection Reports:</b>", InspectionCount),
   HTML("<br>"),
