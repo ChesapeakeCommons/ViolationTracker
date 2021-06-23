@@ -24,11 +24,13 @@ ui <- fluidPage(
       div(id = "title",
           HTML("Violation Tracker")
       ),
-      HTML("<a href='https://www.jamesriverwatch.org/' target='blank' style='margin-top: -8px;'>"),
-         div(id = "header-logo" ),
-      HTML("</a>"),
+     
+      div(id = "header-logo",
+          actionButton("showInfo", ""),
+      ),
+     
       
-      actionButton("showInfo", "?"),
+      
       
   ),      
   #END Header
@@ -40,10 +42,15 @@ ui <- fluidPage(
     leafletOutput("Map", height = 'calc(100vh - 75px)', width = '100%'),
     
     div(id = 'stats-container',
-      checkboxInput("Construction", "Construction Related Permits"),
+        HTML('<label class="legend-header" style="width: 100%" >Totals</label>'),
+        uiOutput("StatsText"),
+    ),
+    
+    div(id = 'stats-container-2',
+      checkboxInput("Construction", "Include Construction Permits"),
       
       
-      uiOutput("StatsText"),
+      
     )
   ),
   
@@ -53,16 +60,38 @@ ui <- fluidPage(
     )
   ),
   
-  hidden(div(id = "Table",sidebarPanel(width = 4,
-    htmlOutput("SiteNo"),
-    htmlOutput("InspectionType"),
-    imageOutput("MarkerIcon", width= '100px', height= '30px'),
-    actionButton("showSidebar", "Show Table"),
-    tableOutput("Table"),
-    textOutput("TableIndex"),
-    actionButton("Back","Back"),
-    actionButton("Next", "Next")
-      ))),
+  hidden(
+          div(id = "Table",
+             
+             sidebarPanel(width = 4,
+                          
+                HTML("<div class='table-container'>
+                          <div class='table-header'>
+                     "),          
+                imageOutput("MarkerIcon", width= '50px', height= '50px'),
+                textOutput("SiteNo"),          
+                textOutput("InspectionType"),          
+                
+              #  HTML(
+              #    htmlOutput("SiteNo", container = tags$div, class = "custom-li-output")
+              #  ),
+                
+                 #   htmlOutput("SiteNo", inline = TRUE),
+                #    htmlOutput("InspectionType", inline = TRUE),
+                  
+                  
+                
+                actionButton("showSidebar", "Show Table"),
+                  tableOutput("Table"),
+                  textOutput("TableIndex"),
+                  actionButton("Back","Back"),
+                  actionButton("Next", "Next"),
+                
+                HTML("</div>
+                  </div>"),  
+              )
+          )
+      ),
   
   )
     
@@ -93,37 +122,6 @@ Icon <- makeIcon(iconUrl = paste("www/Images/Markers/",Type,".png", sep = ""), i
 return(Icon)
 }
 
-groups <- c("Inspection" <- "<div class='legend-item'>
-                                <div>Inspection History</div>
-                                <div class='legend-sub-items-container'>
-                                  <img src='./Images/Markers/A.png' /><div> No Issues</div>
-                                  <img src='./Images/Markers/B.png' /><div> Minor Issues</div>
-                                  <img src='./Images/Markers/C.png' /><div> Significant Issues</div>
-                                  <img src='./Images/Markers/D.png' /><div> Repeat Non-Compliance</div>
-                                </div>
-                                <div>Inspection Count</div>
-                                <div class='legend-sub-items-container'>
-                                  <div class='size-chart' ><div>
-                                
-                                </div>
-                              </div>",
-            
-            "Violation" <- "<div class='legend-item'>
-                                <div>Violation History</div>
-                                <div class='legend-sub-items-container'>
-                                    <img src='./Images/Markers/E.png' /><div> Resolved</div>
-                                    <div class='legend-sub-items-container' style='margin-left: 10px; width: 95px; float:left;'><img ' src='./Images/Markers/F.png' /><div> Unresolved</div>
-                                </div>
-                            </div>",
-            
-            "Enforcement" <- "<div class='legend-item'>
-                                <div>Enforcement Action</div>
-                                <div class='legend-sub-items-container'>
-                                    <img src='./Images/Markers/G.png' />
-                                   
-                                </div>
-                              </div>"
-            )
 
 
 ### MAP ### 
@@ -139,7 +137,7 @@ leaflet("Map")%>%
               baseGroups = c("Streets", "Watersheds"),
   #           overlayGroups = groups, 
               overlayGroups = c("Inspection", "Violation" ,"Enforcement"), 
-              position =c("bottomleft"), 
+              position =c("topleft"), 
               options = layersControlOptions(collapsed = FALSE))%>%
             htmlwidgets::onRender(paste("
                 function() {
@@ -167,7 +165,7 @@ leaflet("Map")%>%
                             "<div>Violation History</div>",
                             "<div class='legend-sub-items-container'>",
                             "<img src='./Images/Markers/E.png' /><div> Resolved</div>",
-                            "<div class='legend-sub-items-container' style='margin-left: 10px; width: 95px; float:left;'><img ' src='./Images/Markers/F.png' /><div> Unresolved</div>",
+                            "<div class='legend-sub-items-container' style='margin-left: 10px; width: 100px; float:left;'><img ' src='./Images/Markers/F.png' /><div> Unresolved</div>",
                                       "</div>",
                                  
                     
@@ -180,6 +178,9 @@ leaflet("Map")%>%
                               "<img src='./Images/Markers/G.png' />",
                             "</div>",
                        "  </div>\"  );
+                       
+                    $('#stats-container').css('display','block');
+                    $('#stats-container-2').css('display','block');
                 }     
             "))%>%
             
@@ -300,7 +301,7 @@ output$InspectionType <- renderText({
   {
     ReportType <- "Violation Report"
   }
-  ReportType <- paste("<b>",ReportType, "</b>")
+  ReportType <- paste("",ReportType, "")
 
   }
   return(ReportType)
@@ -308,7 +309,7 @@ output$InspectionType <- renderText({
 
 output$SiteNo <- renderText({
 req(input$Map_marker_click$id)
-SiteNo <- paste("<b>","Site No:",input$Map_marker_click$id, "</b>")
+SiteNo <- paste("Site No. ",input$Map_marker_click$id)
 return(SiteNo)
 })
 
@@ -473,15 +474,15 @@ Enforcement <- Facilities %>%
                       
 
 tagList(
-  paste("Total Inspection Reports:", InspectionCount),
+  HTML("<b>Inspection Reports:</b>", InspectionCount),
   HTML("<br>"),
-  paste("Number of Non Compliance Inspection Reports:", NonCompliance),
+  HTML("<b>Non Compliance Inspection Reports:</b>", paste(NonCompliance)),
   HTML("<br>"),
-  paste("Total Facility Count:", SiteCount),
+  HTML("<b>Facility Count:</b>", paste(SiteCount)),
   HTML("<br>"),
-  paste("Facilties with a current unresolved Significant Violation:", SignificantViolation),
+  HTML("<b>Facilties w/ current Significant Violation:</b>", paste(SignificantViolation)),
   HTML("<br>"),
-  paste("Facilities with past or current Enforcement Action taken:", Enforcement),
+  HTML("<b>Facilities with Enforcement Action taken:</b>", paste(Enforcement)),
   
 )
 

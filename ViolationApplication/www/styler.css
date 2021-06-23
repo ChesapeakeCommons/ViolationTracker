@@ -4,6 +4,7 @@
 body {
   min-height: 100vh;
   min-height: -webkit-fill-available;
+ 
   
 }
 html {
@@ -13,12 +14,20 @@ html {
 
 
 body{
-    background-color: #000000;
+
+    background-image: url('./images/cla-logo_w.png');
+  
+/*    background-image: url('./images/cla-logo_bw.png');
+*/    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: 50% 50%;
+   
+
+  /*  background-position: max(50%, calc(35% + 315px)) 50%;
+  */
+    background-size: 16%;
+    background-color: #333333;
     
-      background-image: url('./images/loading-background.png');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
 /*background-color: #021D49;
   font-family: sofia-pro, sans-serif !important;
   */
@@ -43,15 +52,22 @@ body{
   width: 100%;
   height: 75px;
   min-width:420px;
-  background-color: #104c4e;
+  background-color: #3d5c8a;
   
-  font-family: Alice, sans-serif !important;
+   background-image: url('./images/gradient.png');
+    background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   
-  border:0px solid red;
+  font-family: "Open Sans" !important;
+ /* font-family: Alice, sans-serif !important;
+  */
+  border-bottom: 4px solid #221b65;
+  
   margin: 0 auto;
-    display: flex;
+/*    display: flex;
    flex-direction: row;
-  flex-wrap: nowrap;
+  flex-wrap: nowrap;*/
   justify-content:  space-between;
   
   padding: 10px 10px 10px 10px;
@@ -61,6 +77,9 @@ body{
   
 /*  float: left;
   */
+  position: relative;
+  display: inline-block;
+  
   border: 0px solid green;
   width: 220px;
   height: 60px ;
@@ -70,9 +89,10 @@ body{
   font-size: 40px;
   color : #ffffff;
   line-height: 22px;
+  font-weight: bold;
   
-  align-self: flex-start;
-  
+/* align-self: flex-start;
+  */
   background-image: url('./images/cla-logo_v001.png');
     background-size: cover;
   background-position: center;
@@ -80,21 +100,40 @@ body{
   
 }
 #title {
+   display: inline-block;       /* Display inline block */
+    text-align: center;          /* For button text center */
+    position: absolute;          /* Position absolute */
+    left: 50%;                   /* Move 50% from left */
+    top: 15px;                /* Move 10px from bottom */
+    transform: translateX(-50%);
+    
   color: white;
-  font-size: 30px;
+  font-size: 20px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  font-family: "Open Sans" !important;
+  font-weight: bold;
+  
   margin-top: 10px;
-  border: 1px solid red;
+  border: 0px solid red;
+  width: 300px;
+  
+  
   
 }
 
 #header-logo {
 
+position: relative;
+  display: inline-block;
+  float: right;
   border: 0px solid green;
-  width: 60px;
-  height: 60px;
-  margin-top: 5px;
+  width: 32px;
+  height: 32px;
+  margin-top: 15px;
+  /*
   align-self: flex-end;
-
+*/
    background-image: url('./images/James+River+Association_Gradient_rgb.png');
   background-size: cover;
   background-position: center;
@@ -112,17 +151,21 @@ body{
 }
 
 
-
+.leaflet-top {
+  
+}
 
 
 
 .leaflet-control-layers {
   
-   font-family: "Open Sans" !important; 
+  
 }
 
 
-
+.leaflet-container{
+    font:11px/1.5 "Open Sans" !important;
+}
 
 
 .leaflet-control-layers-selector{
@@ -132,14 +175,21 @@ body{
   
 }
 
+/*Legend*/
 
 .legend-item {
   position: relative;
   border: 0px solid red;
   float: left;
   display: inline-block;
-    width: 205px;
+    width: 200px;
     clear: none;
+}
+
+.legend-item > div {
+  margin-left: 10px;
+  margin-bottom: 7px;
+  margin-top: 3px;
 }
 
 .legend-sub-items-container{
@@ -149,7 +199,8 @@ body{
   float: left;
   display: inline-block;
   margin-left: 20px;
-  width: calc(100% - 20px);
+  width: calc(100% - 00px);
+   font:11px/1.5 "Open Sans" !important;
 }
 .legend-sub-items-container > div,
 .legend-sub-items-container > img {
@@ -157,6 +208,8 @@ body{
   border: 0px solid red;
   float: left;
   display: inline-block;
+  margin-left: 10px;
+  margin-bottom: 5px;
   
 }
 .legend-sub-items-container > img{
@@ -176,24 +229,37 @@ body{
 
 .legend-header {
   
-  text-align:center;
-  font-size: 20px;
+  text-align: center;
+  font-size: 14px;
   font-weight: bold;
+  margin: 0 auto;
+  
+  letter-spacing: 3px;
+  text-transform: unset;
 }
+
 
 .leaflet-control-layers{
   width: 270px;
-  height: 400px;
+  height: 500px;
+   font-family: "Open Sans" !important; 
+   top: 96px;
 }
 
 .leaflet-control-layers-base{
   position: absolute;
   display: block;
-  top: 300px;
+  top: 400px;
   background-color: none;
   width: 220px !important;
 }
 
+.leaflet-control-layers-base > label > div > span {
+  margin-left : 10px;
+}
+.leaflet-control-layers-base > label > div > input {
+  margin-top : 0;
+}
 
 .leaflet-control-layers-overlays{
   position: absolute;
@@ -207,16 +273,19 @@ body{
 .leaflet-control-layers-separator{
    position: absolute;
   display: block;
-  top: 285px;
+  top: 375px;
   background-color: none;
   width: 260px !important;
 }
 
+
+/*End Legend*/
+
+
+
+
 /*Table*/ 
 
-#Table {
-  
-}
 
 .col-sm-4{
   position: absolute;
@@ -227,10 +296,43 @@ body{
 
 .well {
   width: 450px !important;
+  
+  
   margin-left: 0px;
+  border-radius: 5px;
+  border: 2px solid rgba(0,0,0,0.2);
+ padding: 5px 5px 5px 5px;
+ background-color: #ffffff;
+ 
+ top: 10px;
+ 
+  
+  font: 11px/1.5 "Open Sans" ;
+  
 }
 
-.shiny-table {
+.table-header > #SiteNo,
+.table-header > #InspectionType {
+   display: block;
+   font: 18px "Open Sans";
+   
+   letter-spacing: 3px;
+   width: calc(100% - 50px);
+   text-align: center
+   
+}
+
+.table-header > #SiteNo{
+  font: 20px bold "Open Sans";
+  font-size: 20px;
+  font-weight: bold;
+  
+}
+
+#MarkerIcon{
+  display: block;
+  float: left;
+  margin-left: 10%;
   
 }
 
@@ -245,15 +347,30 @@ body{
 
 #StatsText{
   font-family: "Open Sans" !important;
+  font-size: 11px;
 }
 
 #stats-container{
+  top: 85px;
+   /* bottom: 441px; 
+  */
+  width: 270px;
+  height: 125px;
+  padding: 10px 0 10px 0;
+  
+}
+#stats-container-2{
+ 
+  top: 215px; 
+  width: 270px;
+  height: 35px;
+}
+
+#stats-container, #stats-container-2{
   position: absolute;
-  display: block;
+  display: none;
   z-index: 999;
-  bottom: 400px;
-  width: 300px;
-  height: 300px;
+
   background-color: white;
   
   padding: 6px 10px 6px 6px;
@@ -265,9 +382,60 @@ body{
   margin-left: 10px;
   margin-bottom: 10px;
   
-  font-family: "Open Sans" !important;
+  font:11px/1.5 "Open Sans" !important;
+  
+}
+
+.checkbox{
+  margin: 0 0 0 0px;
+}
+
+#stats-container-2 > .form-group  > .checkbox > label > span{
+ font-weight: bold !important;
   
 }
 
 /*End Stats*/
 
+#showInfo{
+  
+  width: 32px;
+  height: 32px;
+  background-image: url('./Images/info_white.png');
+  background-color: unset !important;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  border: none;
+  color: white;
+ 
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  
+}
+
+
+/*Map Things*/
+
+.leaflet-control-zoom {
+  left: 280px;
+  top: 50px;
+  
+}
+.leaflet-control-search {
+  position: absolute !important;
+  left: 280px;
+  
+}
+/*End Map Things*/
+
+    
+.col-sm-8 {
+    padding-left: 0;
+    position: absolute;
+    top: 0;
+    height: 100vh;
+
+}
