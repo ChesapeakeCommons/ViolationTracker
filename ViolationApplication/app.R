@@ -131,12 +131,13 @@ output$Map <- renderLeaflet({
 leaflet("Map")%>%
             setView(lng = -76.641273, lat =39.045753, zoom = 8)%>%
             addProviderTiles("CartoDB.VoyagerLabelsUnder", group = "Streets")%>%
+            addProviderTiles("Esri.WorldImagery", group = "Satellite")%>%
             hideGroup("Watersheds")%>%
             addMapPane("polygons", zIndex = 210)%>%
             addPolygons(data = MarylandHucs, color = "#b3b3b3", weight = 1, group = "Watersheds", options = pathOptions(pane = "polygons"), label = paste(MarylandHucs$mde8name, "Watershed", sep = " "))%>%
             addLayersControl(
              
-              baseGroups = c("Streets"),
+              baseGroups = c("Streets","Satellite"),
   #           overlayGroups = groups, 
               overlayGroups = c("Inspection", "Violation" ,"Enforcement","Watersheds"), 
               position =c("topleft"), 
