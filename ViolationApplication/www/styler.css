@@ -291,12 +291,13 @@ position: relative;
   position: absolute;
   right: 0;
   width: unset !important;
+  
+  border: 1px solid red;
 }
 
 
 .well {
   width: 450px !important;
-  
   
   margin-left: 0px;
   border-radius: 5px;
@@ -306,19 +307,22 @@ position: relative;
  
  top: 10px;
  
-  
   font: 11px/1.5 "Open Sans" ;
+ 
+   border: 1px solid red;
   
 }
 
 .table-header > #SiteNo,
-.table-header > #InspectionType {
+.table-header > #MarkerIconText {
    display: block;
-   font: 18px "Open Sans";
+   font: 16px "Open Sans";
    
    letter-spacing: 3px;
    width: calc(100% - 50px);
-   text-align: center
+   text-align: left;
+   
+     border: 1px solid red;
    
 }
 
@@ -327,13 +331,17 @@ position: relative;
   font-size: 20px;
   font-weight: bold;
   
+    border: 1px solid red;
+  
 }
 
 #MarkerIcon{
   display: block;
   float: left;
-  margin-left: 10%;
+  margin-left: 10px;
+  margin-right: 10px;
   
+    border: 1px solid red;
 }
 
 /*End Table*/

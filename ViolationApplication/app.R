@@ -68,29 +68,33 @@ ui <- fluidPage(
                 HTML("<div class='table-container'>
                           <div class='table-header'>
                      "),          
-                imageOutput("MarkerIcon", width= '50px', height= '50px'),
-                textOutput("MarkerIconText"),
-                textOutput("SiteNo"),          
-                textOutput("InspectionType"),          
+                  imageOutput("MarkerIcon", width= '50px', height= '50px'),
+                 
+                  textOutput("SiteNo"),          
+                  textOutput("MarkerIconText"),
                 
-              #  HTML(
-              #    htmlOutput("SiteNo", container = tags$div, class = "custom-li-output")
-              #  ),
+                  actionButton("showSidebar", "Hide Table"),
                 
-                 #   htmlOutput("SiteNo", inline = TRUE),
-                #    htmlOutput("InspectionType", inline = TRUE),
+                HTML("</div>"),  
+          
+                HTML("<div>
+                        <div>"),
                   
+                
+                
+                HTML("    </div>
+                     </div>
+                     "),
                   
                 
-                
+              textOutput("InspectionType"),      
                   tableOutput("Table"),
                   textOutput("TableIndex"),
                   actionButton("Back","Back"),
                   actionButton("Next", "Next"),
-                 actionButton("showSidebar", "Hide Table"),
                 
-                HTML("</div>
-                  </div>"),  
+                
+                HTML("</div>"),  
               )
           )
       ),
