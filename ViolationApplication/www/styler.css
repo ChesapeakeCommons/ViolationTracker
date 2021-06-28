@@ -273,9 +273,9 @@ position: relative;
 .leaflet-control-layers-separator{
    position: absolute;
   display: block;
-  top: 395px;
+  top: 405px;
   background-color: none;
-  width: 260px !important;
+  width: 266px !important;
 }
 
 
@@ -555,7 +555,8 @@ position: relative;
 .leaflet-control-search {
   position: absolute !important;
   left: 280px;
-  
+  box-shadow: unset !important;
+    border: 2px solid rgba(0,0,0,0.2) !important;
 }
 /*End Map Things*/
 
