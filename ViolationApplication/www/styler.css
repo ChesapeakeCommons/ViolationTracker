@@ -241,7 +241,7 @@ position: relative;
 
 .leaflet-control-layers{
   width: 270px;
-  height: 500px;
+  height: 520px;
    font-family: "Open Sans" !important; 
    top: 96px;
 }
@@ -249,7 +249,7 @@ position: relative;
 .leaflet-control-layers-base{
   position: absolute;
   display: block;
-  top: 400px;
+  top: 420px;
   background-color: none;
   width: 220px !important;
 }
@@ -273,7 +273,7 @@ position: relative;
 .leaflet-control-layers-separator{
    position: absolute;
   display: block;
-  top: 375px;
+  top: 395px;
   background-color: none;
   width: 260px !important;
 }
@@ -289,27 +289,27 @@ position: relative;
 
 .col-sm-4{
   position: absolute;
-  right: 0;
+  right: -5px;
+  top: 85px;
   width: unset !important;
   
-  border: 1px solid red;
+  border: 0px solid red;
 }
 
 
 .well {
-  width: 450px !important;
+  width: 400px !important;
   
   margin-left: 0px;
   border-radius: 5px;
   border: 2px solid rgba(0,0,0,0.2);
- padding: 5px 5px 5px 5px;
+ padding: 5px 5px 15px 5px;
  background-color: #ffffff;
  
  top: 10px;
  
   font: 11px/1.5 "Open Sans" ;
  
-   border: 1px solid red;
   
 }
 
@@ -319,10 +319,11 @@ position: relative;
    font: 16px "Open Sans";
    
    letter-spacing: 3px;
-   width: calc(100% - 50px);
+    width: 350px;
+  /*width: calc(100% - 100px);*/
    text-align: left;
    
-     border: 1px solid red;
+     border: 0px solid red;
    
 }
 
@@ -331,7 +332,11 @@ position: relative;
   font-size: 20px;
   font-weight: bold;
   
-    border: 1px solid red;
+    border: 0px solid red;
+  
+}
+.table-header > #MarkerIconText{
+  font-weight: bold;
   
 }
 
@@ -341,9 +346,124 @@ position: relative;
   margin-left: 10px;
   margin-right: 10px;
   
-    border: 1px solid red;
+    border: 0px solid red;
 }
 
+#showSidebar{
+    width: 24px;
+  height: 24px;
+  background-image: url('./Images/close_black.png');
+  background-color: unset !important;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  border: none;
+  color: white;
+  
+  border: 0px solid green;
+ 
+  text-align: center;
+  text-decoration: none;
+  display: block;
+  float: right;
+  font-size: 16px;
+}
+
+#InspectionType{
+    display: block;
+    width: 100%;
+    text-align: center;
+    font: bold 14px "Open Sans" !important;
+    letter-spacing: 3px;
+    margin: 10px 0 10px 0;
+    
+    
+}
+
+#RecordNav {
+  width: 200px;
+  display: block;
+  border: 0px solid green;
+  margin: 0 auto;
+  font: bold 14px "Open Sans" !important;
+  letter-spacing: 2px;
+  
+
+}
+
+#Back{
+  float: left;
+  display: block;
+  
+  width: 24px;
+  height: 24px;
+  background-image: url('./Images/baseline_arrow_back_ios_black_48dp.png');
+  background-color: unset !important;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  border: none;
+  color: white;
+  
+  border: 0px solid green !important;
+  outline: none !important;
+ 
+  text-align: center;
+  text-decoration: none;
+  
+  font-size: 16px;
+}
+#TableIndex{
+ top: 0;
+ width: 100px;
+ height: 24px;
+ display: block;
+ margin: 0 auto;
+ text-align: center;
+   padding-top: 3px;
+}
+#Next{
+  float: right;
+  display: block;
+  
+  width: 24px;
+  height: 24px;
+  background-image: url('./Images/baseline_arrow_forward_ios_black_48dp.png');
+  background-color: unset !important;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  border: none;
+  color: white;
+  
+  border: 0px solid green !important;
+  outline: none !important;
+ 
+  text-align: center;
+  text-decoration: none;
+  
+  font-size: 16px;
+
+  
+}
+
+.table {
+  width: 100% !important;
+  margin-bottom: 10px;
+
+}
+
+.table > thead > tr > td:first-child {
+ 
+  width: 150px;
+  
+}
+
+.table > thead > tr > td:nth-child(2) {
+ 
+  width: calc(100% - 150px);
+  
+}
 /*End Table*/
 
 /*Stats*/

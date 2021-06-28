@@ -68,12 +68,13 @@ ui <- fluidPage(
                 HTML("<div class='table-container'>
                           <div class='table-header'>
                      "),          
+                  actionButton("showSidebar", ""),
                   imageOutput("MarkerIcon", width= '50px', height= '50px'),
                  
                   textOutput("SiteNo"),          
                   textOutput("MarkerIconText"),
-                
-                  actionButton("showSidebar", "Hide Table"),
+                  textOutput("InspectionType"),  
+                  
                 
                 HTML("</div>"),  
           
@@ -87,14 +88,21 @@ ui <- fluidPage(
                      "),
                   
                 
-              textOutput("InspectionType"),      
-                  tableOutput("Table"),
-                  textOutput("TableIndex"),
-                  actionButton("Back","Back"),
-                  actionButton("Next", "Next"),
+            
+             
+                tableOutput("Table"),
+                     
+              
+              HTML("<div id='RecordNav'>"),    
+              
+                actionButton("Next", ""),
+                actionButton("Back",""),
+            #    textOutput("InspectionType"),  
+                textOutput("TableIndex"),
+              
+              HTML("</div>"),
                 
-                
-                HTML("</div>"),  
+                  HTML("</div>"),  
               )
           )
       ),
@@ -181,6 +189,13 @@ leaflet("Map")%>%
                               "<img src='./Images/Markers/G.png' />",
                             "</div>",
                        "  </div>\"  );
+                       
+                            
+                       $( \"span:contains('Watersheds')\" ).html(  \" ",
+                          "<div class='legend-item'>",
+                            "<div>Watersheds</div>",
+                           
+                        "  </div>\"  );
                        
                     $('#stats-container').css('display','block');
                     $('#stats-container-2').css('display','block');
