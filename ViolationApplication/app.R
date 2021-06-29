@@ -15,6 +15,8 @@ ui <- fluidPage(
   theme = "styler.css",
   useShinyjs(),
     
+  
+  div(id='background'),
 
   #Start Header
   div(id = "header",
@@ -197,8 +199,12 @@ leaflet("Map")%>%
                            
                         "  </div>\"  );
                        
-                    $('#stats-container').css('display','block');
+                        $('#stats-container').css('z-index','999');
+                    $('#stats-container-2').css('z-index','999');
+                       
+                 /*   $('#stats-container').css('display','block');
                     $('#stats-container-2').css('display','block');
+                */
                 }     
             "))%>%
             

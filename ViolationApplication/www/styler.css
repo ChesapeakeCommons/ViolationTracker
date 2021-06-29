@@ -1,5 +1,6 @@
  @import url("https://fonts.googleapis.com/css?family=Open+Sans");
 
+@import url('styler_mobile.css');
 
 body {
   min-height: 100vh;
@@ -15,7 +16,7 @@ html {
 
 body{
 
-    background-image: url('./images/cla-logo_w.png');
+    background-image: url('./Images/cla-logo_w.png');
   
 /*    background-image: url('./images/cla-logo_bw.png');
 */    background-repeat: no-repeat;
@@ -42,6 +43,17 @@ body{
 */
 }
 
+#background{
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  width: 100%;
+  height: 100vh;
+  background-color: red;
+  
+}
+
 
 .container-fluid{
   padding: 0 0 0 0;
@@ -49,6 +61,8 @@ body{
 
 /*START HEADER STYLES*/
 #header {
+  position: absolute;
+  z-index: 999;
   width: 100%;
   height: 75px;
   min-width:420px;
@@ -148,11 +162,12 @@ position: relative;
   position: fixed !important;
     top: 75px !important;
     bottom: 0px !important;
+    z-index: 999;
 }
 
 
 .leaflet-top {
-  
+  height: 100vh;
 }
 
 
@@ -188,7 +203,7 @@ position: relative;
 
 .legend-item > div {
   margin-left: 10px;
-  margin-bottom: 7px;
+  margin-bottom: 0px;
   margin-top: 3px;
 }
 
@@ -241,7 +256,7 @@ position: relative;
 
 .leaflet-control-layers{
   width: 270px;
-  height: 520px;
+  height: 440px;
    font-family: "Open Sans" !important; 
    top: 96px;
 }
@@ -249,7 +264,7 @@ position: relative;
 .leaflet-control-layers-base{
   position: absolute;
   display: block;
-  top: 420px;
+  top: 355px;
   background-color: none;
   width: 220px !important;
 }
@@ -273,7 +288,7 @@ position: relative;
 .leaflet-control-layers-separator{
    position: absolute;
   display: block;
-  top: 405px;
+  top: 340px;
   background-color: none;
   width: 266px !important;
 }
@@ -413,7 +428,18 @@ position: relative;
   
   font-size: 16px;
 }
+
+.container-fluid > #Table {
+  
+   position: absolute;
+ z-index: 999;
+ right: 0;
+ top:0;
+ 
+}
+
 #TableIndex{
+
  top: 0;
  width: 100px;
  height: 24px;
@@ -496,8 +522,8 @@ position: relative;
 
 #stats-container, #stats-container-2{
   position: absolute;
-  display: none;
-  z-index: 999;
+  display: block;
+  z-index: 0;
 
   background-color: white;
   
@@ -549,20 +575,29 @@ position: relative;
 
 .leaflet-control-zoom {
   left: 280px;
-  top: 50px;
+  top: 60px;
   
 }
 .leaflet-control-search {
   position: absolute !important;
   left: 280px;
+/*  width: 250px; */
   box-shadow: unset !important;
     border: 2px solid rgba(0,0,0,0.2) !important;
+  
+}
+.search-input{
+  display: inline-block;
   
 }
 .search-button {
     width: 31px !important;
     height: 31px !important;
-        background: url(css/search-icon.png) no-repeat 2px 2px #fff !important;
+    display: inline-block;
+    background-image: url(./Images/baseline_search_black_48dp.png) !important;
+    background-size: cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
   
 }
 
