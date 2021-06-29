@@ -8,6 +8,7 @@ library(tidyverse)
 library(lubridate)
 library(leaflet.extras)
 library(rgdal)
+library(jsonlite)
 
 
 # Define UI for Application 
@@ -118,12 +119,45 @@ Facilities <- read.csv("www/Data/Facilities_v5.csv", stringsAsFactors = FALSE)
 Permits <- read.csv("www/Data/Permits_v2.csv", stringsAsFactors = FALSE)
 ColumnSelect <- read_csv("www/Data/ColumnSelectSheet_v1.csv")
 MarylandHucs <- suppressMessages(rgdal::readOGR("www/Data/MarylandHucs_v4.geojson", verbose = TRUE))
+EJWasteWater <- suppressMessages(rgdal::readOGR("www/Data/MarylandEJLayer_v6.json", verbose = TRUE))
 FacilitiesReactive <- reactiveValues(df = data.frame(Facilities))
 PermitsReactive <- reactiveValues(df = data.frame())
 PermitPage <- reactiveValues(X = as.numeric(1))
 TypeName <- c("No Issues", "Minor Issues", "Significant Issues","Repeat Non Compliance","Resolved Violation","Unresolved Violation","Enforcement Action")
 TypeCode <- c("A","B","C","D","E","F","G")
 MarkerType <- data.frame(TypeName,TypeCode)
+
+
+
+
+for(row in 1:nrow(EJWasteWater))
+{
+if(EJWasteWater$P_PWDIS_D2[row] < 50)
+{
+  EJWasteWater$Color[row] <- "#F7FBFF"
+}
+  if(EJWasteWater$P_PWDIS_D2[row] > 50)
+  {
+    EJWasteWater$Color[row] <- "#D1BEC3"
+  }
+  if(EJWasteWater$P_PWDIS_D2[row] > 75)
+  {
+    EJWasteWater$Color[row] <- "#AB8187"
+  }
+  if(EJWasteWater$P_PWDIS_D2[row] > 85)
+  {
+    EJWasteWater$Color[row] <- "#85444A"
+  }
+  if(EJWasteWater$P_PWDIS_D2[row] > 95 )
+  {
+    EJWasteWater$Color[row] <- "#5F070E"
+  }
+}
+
+# EJWasteWater <- EJWasteWater %>%
+#                 filter(P_PWDIS_D2 != 74.8523779612783)
+
+
 
 
 ### ICON FUNCTION ### 
@@ -143,11 +177,10 @@ leaflet("Map")%>%
             hideGroup("Watersheds")%>%
             addMapPane("polygons", zIndex = 210)%>%
             addPolygons(data = MarylandHucs, color = "#b3b3b3", weight = 1, group = "Watersheds", options = pathOptions(pane = "polygons"), label = paste(MarylandHucs$mde8name, "Watershed", sep = " "))%>%
+            addPolygons(data = EJWasteWater, color = ~Color, weight = 1, fillOpacity = .65, opacity = .5, group = "EJ Layer", options = pathOptions(pane = "polygons"), label = paste0("Waste Water Discharge Vulnerability: ",round(EJWasteWater$P_PWDIS_D2,0),"th percentile"))%>%
             addLayersControl(
-             
               baseGroups = c("Streets","Satellite"),
-  #           overlayGroups = groups, 
-              overlayGroups = c("Inspection", "Violation" ,"Enforcement","Watersheds"), 
+              overlayGroups = c("Inspection", "Violation" ,"Enforcement","Watersheds","EJ Layer"), 
               position =c("topleft"), 
               options = layersControlOptions(collapsed = FALSE))%>%
             htmlwidgets::onRender(paste("
@@ -196,6 +229,14 @@ leaflet("Map")%>%
                             "<div>Watersheds</div>",
                            
                         "  </div>\"  );
+                        
+                 $( \"span:contains('EJ Layer')\" ).html(  \" ",
+                    "<div class='legend-item'>",
+                    "<div>EJ Layer</div>",
+                    "<div class='legend-sub-items-container'>",
+                    "<img src='./Images/EJLegend.png' />",
+                    "</div>",
+                    "  </div>\"  );
                        
                     $('#stats-container').css('display','block');
                     $('#stats-container-2').css('display','block');
@@ -497,15 +538,15 @@ Enforcement <- Facilities %>%
                filter(MarkerShape == "G")%>%
                tally()
 tagList(
-  HTML("<b>Inspection Reports:</b>", InspectionCount),
+  HTML("<b>Total Inspection Reports:</b>", InspectionCount),
   HTML("<br>"),
-  HTML("<b>Non Compliance Inspection Reports:</b>", paste(NonCompliance)),
+  HTML("<b>&emsp; Non Compliance:</b>", paste(NonCompliance)),
   HTML("<br>"),
-  HTML("<b>Facility Count:</b>", paste(SiteCount)),
+  HTML("<b>Total Facility Count:</b>", paste(SiteCount)),
   HTML("<br>"),
-  HTML("<b>Facilties w/ current Significant Violation:</b>", paste(SignificantViolation)),
+  HTML("<b>&emsp;Significant Violation:</b>", paste(SignificantViolation)),
   HTML("<br>"),
-  HTML("<b>Facilities with Enforcement Action taken:</b>", paste(Enforcement)),
+  HTML("<b>&emsp;Enforcement Action taken:</b>", paste(Enforcement)),
   
 )
 
