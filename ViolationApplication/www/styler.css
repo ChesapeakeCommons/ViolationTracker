@@ -557,7 +557,15 @@ position: relative;
   left: 280px;
   box-shadow: unset !important;
     border: 2px solid rgba(0,0,0,0.2) !important;
+  
 }
+.search-button {
+    width: 31px !important;
+    height: 31px !important;
+        background: url(css/search-icon.png) no-repeat 2px 2px #fff !important;
+  
+}
+
 /*End Map Things*/
 
     
