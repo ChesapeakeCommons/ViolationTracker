@@ -33,14 +33,6 @@ ComplianceGeo <- read_csv("Data/GeoCode/ComplianceGeo_v1.csv")
 EnforcementGeo <- read_csv("Data/GeoCode/EnforcementGeo_v1.csv")
 ViolationGeo <- read_csv("Data/GeoCode/ViolationGeo_v1.csv")
 
-
-
-
-
-
-
-
-
 ############### ############### ###########
 ############# DATA PROCESSING ########### #
 ############### ############### ###########
@@ -106,7 +98,7 @@ ConstructionList <- c("NPDES Construction Activity","Tidal Wetlands","Nontidal W
 # A - 0 - No Issues - 
 # B - 1-7 - Minor Issues
 # C - 8-13 - Significant Issues 
-# D - 14+ - Repeast Non Compliace 
+# D - 14+ - Repeat Non Compliace 
 # E - Resolved 
 # F - Unresolved 
 # G - Enforcement Action
@@ -122,23 +114,26 @@ CombinedDataTesting <- Permits %>%
                        slice_sample(n = 500)
 
 
-SiteScoreMaker <- function(DF)
+SiteScoreMaker <- function(InputDF)
 {
+DF <- InputDF %>%
+      mutate(MarkerShape = "")%>%
+      mutate(MarkerSize = "")%>%
+      mutate(Construction = 0)
+        
+      
 
 #Declaring Empty Site Set Data for Visualizing
-SiteData <- DF[0,]%>%
-  mutate(MarkerShape = "")%>%
-  mutate(MarkerSize = "")%>%
-  mutate(Construction = 0)
-print(SiteData)
+SiteData <- DF[0,]
+ 
 
 for(i in unique(DF$SiteNo))
 {
-
 ## Selecting down to only the correct site ##
 SiteSet <- DF %>%
            filter(SiteNo == i)%>%
            arrange(desc(InspectionDate))
+
 
 ## Compliance/Inspection Scoring ##
 if("C" %in% SiteSet$Type)
@@ -157,7 +152,7 @@ SiteSetPast <- SiteSet %>%
            arrange(desc(InspectionDate))%>%
            slice_tail(n = nrow(.)-1)
 
-## Calculating groups by inspection reporter
+## Calculating groups by inspection report
 SiteSetScoringPast <- count(SiteSetPast$SiteCondition) %>%
                   mutate(value = 0)%>%
                   mutate(TempScore = 0)%>%
@@ -235,16 +230,19 @@ SiteSet$MarkerSize <- 4
 SiteSet$InspectionCount <- nrow(SiteSet)
 
 ## Adding Construction Tag
-if(ConstructionList %in% SiteSet$InspectionType)
+for(n in 1:nrow(data.frame(SiteSet$InspectionType)))
 {
-SiteSet$Construction <- 1
-print("ConstructionTest")
-}
-else
-{
-SiteSet
+  if(SiteSet$InspectionType[n] %in% ConstructionList)
+  {
+    SiteSet$Construction[n] <- 1
+  }
+  else
+  {
+    SiteSet$Construction[n] <- 0
+  }
 }
 
+SiteSet$Construction <- ifelse(sum(SiteSet$Construction) > 0,1,0)
 
 # ### Testing #### 
 ## Comment out after 
@@ -260,15 +258,21 @@ SiteSet
 # print("--------")
 # }
 # 
+#print(data.frame(SiteData))
 
 #Binding all the Site Data 
+
 SiteData <- rbind(SiteData,SiteSet)
+print(nrow(SiteData))
 }
 
 
-# Adding tag for if its a construction site and making the file unique to each site ID
+
+# making the file unique to each site ID
 SiteData <- SiteData %>%
   distinct(SiteNo, .keep_all = TRUE)
+
+
 
 return(SiteData)
 }
@@ -276,36 +280,29 @@ return(SiteData)
 Results <- SiteScoreMaker(Permits)
 ResultsSF <- Results %>%
           filter(!is.na(Latitude))%>%
-        filter(!is.na(Longitude))%>%
-        select(SiteNo,Latitude,Longitude)
+          filter(!is.na(Longitude))%>%
+          select(SiteNo,Latitude,Longitude)
 
 
-### Adding Watersheds ### 
+### Adding Watersheds !!! Commenting out because we got them from QGIS rather than here, but in the next update we should use this for a streamlined process ### 
 ## Getting MD HUCS from MD Open Data Portal)
-MDHucUrl <- "https://geodata.md.gov/imap/rest/services/Hydrology/MD_Watersheds/FeatureServer/2/query?where=1%3D1&outFields=*&outSR=4326&f=json"
-MDHucSF <- read_sf(MDHucUrl)
-crsString <- "+proj=lcc +lat_1=39.45 +lat_2=38.3 +lat_0=37.66666666666666 +lon_0=-77 +x_0=400000 +y_0=0 +ellps=GRS80 +units=m +no_defs"
-ResultsSf <- st_read(ResultsSF,coords = c("Longitude", "Latitude"), crs = crsString)
+# MDHucUrl <- "https://geodata.md.gov/imap/rest/services/Hydrology/MD_Watersheds/FeatureServer/2/query?where=1%3D1&outFields=*&outSR=4326&f=json"
+# MDHucSF <- read_sf(MDHucUrl)
+# crsString <- "+proj=lcc +lat_1=39.45 +lat_2=38.3 +lat_0=37.66666666666666 +lon_0=-77 +x_0=400000 +y_0=0 +ellps=GRS80 +units=m +no_defs"
+# ResultsSf <- st_read(ResultsSF,coords = c("Longitude", "Latitude"), crs = crsString)
 
 
+FacilitiesOG <- read.csv("ViolationApplication/www/Data/Facilities_v5.csv", stringsAsFactors = FALSE)%>%
+                select(c(SiteNo,mde8name))
 
+FacilitiesOG$SiteNo <- as.character(FacilitiesOG$SiteNo)
 
-
-
-
-
-
-
-
-
+ResultsFinal <- left_join(Results,FacilitiesOG)%>%
+                filter(mde8name != "")
 
 #### SAVING OUT FACILITIES FILE ####
 #Saving directly to app folder 
-write.csv(Results, "ViolationApplication/www/Data/Facilities_v4.csv", row.names = FALSE)
-
-
-
-
+write.csv(ResultsFinal, "ViolationApplication/www/Data/Facilities_v5.csv", row.names = FALSE)
 
 
 
@@ -322,12 +319,11 @@ PermitType <- count(Results$InspectionType)
 
 
 
-ResultsNoConstruction <- Results %>%
-                        filter(InspectionType != "NPDES Construction Activity")%>%
-                        filter(InspectionType != "Tidal Wetlands")%>%
-                        filter(InspectionType != "Nontidal Wetlands")%>%
-                        filter(InspectionType != "Sediment_Erosion")
+ResultsConstructionOG <- FacilitiesOG %>%
+                        filter(Construction == 1)
 
+ResultsConstruction <- Results %>%
+  filter(Construction == 1)
 
 #Histogram 
 hist(Results$InspectionCount, breaks = 200, xlim = c(0,60))

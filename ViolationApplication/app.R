@@ -9,6 +9,7 @@ library(lubridate)
 library(leaflet.extras)
 library(rgdal)
 library(jsonlite)
+library(scales)
 
 
 # Define UI for Application 
@@ -154,11 +155,6 @@ if(EJWasteWater$P_PWDIS_D2[row] < 50)
   }
 }
 
-# EJWasteWater <- EJWasteWater %>%
-#                 filter(P_PWDIS_D2 != 74.8523779612783)
-
-
-
 
 ### ICON FUNCTION ### 
 MapIconMaker <- function(Type, Size)
@@ -254,7 +250,7 @@ observe({
 if(input$Construction == FALSE)
 {
 Facilities <- FacilitiesReactive$df %>%
-              filter(Construction != 0)
+              filter(Construction == 0)
 }
 else
 {
@@ -315,7 +311,7 @@ HTML("Use the Legend to control whether inspections, enforcement, or violations 
 HTML("<br>"),
 HTML("<li>"),
 HTML("To find more information, search the site number in the"),
-tags$a(href="http://mdewin64.mde.state.md.us/ECollaboration/SearchPortal.aspx", "Open MDE portal."),
+tags$a(href="hhttps://mdedataviewer.mde.state.md.us/", "Open MDE portal."),
 HTML("<br>"),
 HTML("<li>"),
 HTML("Use the Basemap Control to add or remove watershed boundaries, environmental justice communities, or basemaps."),
@@ -518,7 +514,8 @@ output$StatsText<- renderUI({
 # Count of Sites 
 SiteCount <- Facilities %>%
              distinct(SiteNo)%>%
-             tally()
+             tally()%>%
+             as.numeric()
 
 # Count of Inspecitons 
 InspectionCount <- nrow(Permits)
@@ -526,27 +523,30 @@ InspectionCount <- nrow(Permits)
 #NonCompliance Count 
 NonCompliance <- Permits %>%
                 filter(SiteCondition == "Noncompliance")%>%
-                tally()
+                tally()%>%
+                as.numeric()
 
 #Unresolved Sig Violation
 SignificantViolation <- Facilities %>%
                         filter(MarkerShape == "F")%>%
-                        tally()
+                        tally()%>%
+                        as.numeric()
                       
 #Enforcement 
 Enforcement <- Facilities %>%
                filter(MarkerShape == "G")%>%
-               tally()
+               tally()%>%
+               as.numeric()
 tagList(
-  HTML("<b>Total Inspection Reports:</b>", InspectionCount),
+  HTML("<b>Total Inspection Reports:</b>", comma(InspectionCount)),
   HTML("<br>"),
-  HTML("<b>&emsp; Non Compliance:</b>", paste(NonCompliance)),
+  HTML("<b>&emsp; Non Compliance:</b>", comma(NonCompliance)),
   HTML("<br>"),
-  HTML("<b>Total Facility Count:</b>", paste(SiteCount)),
+  HTML("<b>Total Facility Count:</b>", comma(SiteCount)),
   HTML("<br>"),
-  HTML("<b>&emsp;Significant Violation:</b>", paste(SignificantViolation)),
+  HTML("<b>&emsp;Significant Violation:</b>", comma(SignificantViolation)),
   HTML("<br>"),
-  HTML("<b>&emsp;Enforcement Action taken:</b>", paste(Enforcement)),
+  HTML("<b>&emsp;Enforcement Action taken:</b>", comma(Enforcement)),
   
 )
 
