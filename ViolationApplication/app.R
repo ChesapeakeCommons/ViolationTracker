@@ -173,10 +173,10 @@ leaflet("Map")%>%
             hideGroup("Watersheds")%>%
             addMapPane("polygons", zIndex = 210)%>%
             addPolygons(data = MarylandHucs, color = "#b3b3b3", weight = 1, group = "Watersheds", options = pathOptions(pane = "polygons"), label = paste(MarylandHucs$mde8name, "Watershed", sep = " "))%>%
-            addPolygons(data = EJWasteWater, color = ~Color, weight = 1, fillOpacity = .65, opacity = .5, group = "EJ Layer", options = pathOptions(pane = "polygons"), label = paste0("Waste Water Discharge Vulnerability: ",round(EJWasteWater$P_PWDIS_D2,0),"th percentile"))%>%
+            addPolygons(data = EJWasteWater, color = ~Color, weight = 1, fillOpacity = .65, opacity = .5, group = "Waste Water Vulnerability", options = pathOptions(pane = "polygons"), label = paste0("Waste Water Discharge Vulnerability: ",round(EJWasteWater$P_PWDIS_D2,0),"th percentile"))%>%
             addLayersControl(
               baseGroups = c("Streets","Satellite"),
-              overlayGroups = c("Inspection", "Violation" ,"Enforcement","Watersheds","EJ Layer"), 
+              overlayGroups = c("Inspection", "Violation" ,"Enforcement","Watersheds","Waste Water Vulnerability"), 
               position =c("topleft"), 
               options = layersControlOptions(collapsed = FALSE))%>%
             htmlwidgets::onRender(paste("
@@ -228,7 +228,7 @@ leaflet("Map")%>%
                         
                  $( \"span:contains('EJ Layer')\" ).html(  \" ",
                     "<div class='legend-item'>",
-                    "<div>EJ Layer</div>",
+                    "<div> Waste Water Vulnerability </div>",
                     "<div class='legend-sub-items-container'>",
                     "<img src='./Images/EJLegend.png' />",
                     "</div>",
@@ -298,7 +298,7 @@ observeEvent(input$Map_marker_click, ignoreNULL = FALSE,
 
 InfoModal <- modalDialog(
 title = HTML("<b> Chesapeake Legal Alliance's Violation Tracker </b>"),
-HTML("<b> Quick Start Instructions: </b>"),
+HTML("<b> Quick Start Instructions and Info: </b>"),
 HTML("<br>"),
 HTML("<li>"),
 HTML("Clicking a map cluster will reveal additional clusters or individual facilities."),
@@ -314,7 +314,11 @@ HTML("To find more information, search the site number in the"),
 tags$a(href="hhttps://mdedataviewer.mde.state.md.us/", "Open MDE portal."),
 HTML("<br>"),
 HTML("<li>"),
-HTML("Use the Basemap Control to add or remove watershed boundaries, environmental justice communities, or basemaps."),
+HTML("Use the Basemap Control to add or remove watershed boundaries, waste water vulnerability, or basemaps."),
+HTML("<br>"),
+HTML("<li>"),
+HTML("Waste water vulnerability is from the EPA's EJ Screen Wastewater Discharge Indicator. For more information"),
+tags$a(href="hhttps://www.epa.gov/sites/production/files/2015-05/documents/ejscreen_technical_document_20150505.pdf#page=55", "click here."),
 HTML("<br>"),
 HTML("<br>"),
 HTML("<b> For Additional Instructions and More Information About This Tracker Tool: </b>"),
