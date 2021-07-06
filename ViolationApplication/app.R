@@ -12,7 +12,7 @@ library(rgdal)
 
 # Define UI for Application 
 ui <- fluidPage(
-  theme = "styler.css",
+  theme = "styler_mobile.css",
   useShinyjs(),
     
   
