@@ -1,0 +1,186 @@
+
+
+ @import url("https://fonts.googleapis.com/css?family=Open+Sans");
+
+@import url('styler.css');
+
+
+@media (max-height: 700px) {
+  
+
+  
+}
+
+
+
+@media (max-width: 800px), (max-height: 700px){
+   
+   
+  #stats-container{
+    z-index: 0 !important;
+    border: 3px solid red !important;
+  }
+  
+  #stats-container-2{ 
+    top: 45px !important; 
+  }
+ 
+  .leaflet-control-layers{
+     top: -34px !important; 
+  }
+   
+    
+  #header {
+    height: 40px !important;
+    border-bottom: 2px solid #221b65 !important;
+    padding: 5px 5px 5px 5px !important;
+    
+  }
+  
+  #header-title{
+    width: 110px !important;
+    height: 30px !important;
+  }
+  
+  #header-logo {
+    margin-top: 3px !important;
+    width: 24px !important;
+    height: 24px !important;
+  }
+  #showInfo {
+    width: 24px !important;
+    height: 24px !important;
+    
+  }
+  
+  #title{
+    top: 5px !important;
+    margin-top: 0px !important;
+  }
+  
+  #Map{
+    top: 40px !important;
+    height: calc(100vh - 40px) !important;
+  }
+  
+  
+  /*Stats contatiner*/
+  
+  /**/
+  
+  /*Legend Styles*/
+
+  .leaflet-container{
+    font: 8px "Open Sans" !important;
+  }
+  
+ .legend-sub-items-container{
+   font: 8px "Open Sans" !important;
+    margin-left: 5px !important;
+    margin-top: 1px !important;
+ }
+ 
+ .legend-header{
+   font-size: 11px !important;
+   margin-left: -10px !important;
+ }
+ 
+  .legend-sub-items-container > div {
+    margin-left: 5px !important;
+    margin-bottom: 2px !important;
+  }
+  .legend-sub-items-container > img {
+    max-width: 10px !important;
+    max-height: 10px !important;
+    margin-left: 5px !important;
+    margin-bottom: 2px !important;
+    
+  }
+  .legend-item{
+    width: 160px !important;
+  }
+  
+  .legend-item > div {
+      margin-left: 5px !important;
+      margin-top: 1px !important;
+  }
+  
+  .legend-sub-items-container > .size-chart {
+    
+      height: 36px !important;
+      width: 90px !important;
+  }
+  #stats-container-2{
+    width: 173px !important;
+    font: 8px "Open Sans" !important;   
+    height: 27px !important;
+   
+  }
+  
+  #stats-container-2 > .shiny-input-container > .checkbox > label{
+    
+
+  }
+  
+  #stats-container-2 > .shiny-input-container > .checkbox > label > input{
+    margin-top: 0 !important;
+
+  }
+  
+  .leaflet-control-layers{
+      width: 173px !important;
+      height: 280px !important;
+  
+  }  
+  .leaflet-control-layers-overlays{
+     width: 180px !important;
+      height: 280px !important;
+     
+  }
+  .leaflet-control-layers-separator{
+    top: 196px !important;
+     width: 172px !important;
+     
+
+  }
+  .leaflet-control-layers-base{
+    top: 210px !important;
+   width: 180px !important;
+  }
+    /*END Styles*/
+    
+/*Map buttons*/
+
+.leaflet-control-search{
+    left: 177px !important;
+    margin-top: 5px !important;
+   
+
+}
+.search-button {
+        width: 23px !important; 
+    height: 23px !important;
+}
+
+.leaflet-control-zoom {
+  left: 177px !important;
+  top: 50px !important;
+  height: 50px !important;
+
+  
+}
+.leaflet-control-zoom-in,
+.leaflet-control-zoom-out{
+  width: 23px !important;
+    height: 23px !important;
+    line-height: 23px !important;
+    font-size: 16px !important;
+}
+
+    
+/* END Map buttons*/
+  
+  
+  
+  
+}
