@@ -44,7 +44,7 @@ body{
 */
 }
 
-#background{
+#background, #background2{
   position: absolute;
   top: 0;
   left: 0;
@@ -52,20 +52,25 @@ body{
   width: 100%;
   height: 100vh;
 
-    background-image: url('./Images/cla-logo_w.png');
+    
   
-/*    background-image: url('./images/cla-logo_bw.png');
-*/    background-repeat: no-repeat;
+    background-repeat: no-repeat;
     background-attachment: fixed;
     background-position: 50% 50%;
    
-
-  /*  background-position: max(50%, calc(35% + 315px)) 50%;
-  */
     background-size: 16%;
+
+}
+#background{
+background-image: url('./Images/cla-logo_w.png');
     background-color: #333333;
     
 }
+#background2{
+  background-image: url('./Images/cla-logo_leaf.png');
+
+}
+
 
 
 .container-fluid{
@@ -256,6 +261,16 @@ position: relative;
   width: 150px;
 }
 
+.legend-sub-items-container > .color-chart{
+  background-image: url('./Images/EJLegend.png');
+    background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  height: 45px;
+  width: 175px;
+  margin-top: -7px;
+}
+
 .legend-header {
   
   text-align: center;
@@ -270,7 +285,7 @@ position: relative;
 
 .leaflet-control-layers{
   width: 270px;
-  height: 455px;
+  height: 490px;
    font-family: "Open Sans" !important; 
    top: 96px;
 }
@@ -278,7 +293,7 @@ position: relative;
 .leaflet-control-layers-base{
   position: absolute;
   display: block;
-  top: 370px;
+  top: 410px;
   background-color: none;
   width: 220px;
 }
@@ -302,7 +317,7 @@ position: relative;
 .leaflet-control-layers-separator{
    position: absolute;
   display: block;
-  top: 358px;
+  top: 398px;
   background-color: none;
   width: 266px;
 }

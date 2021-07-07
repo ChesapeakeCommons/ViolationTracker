@@ -3,6 +3,7 @@
  @import url("https://fonts.googleapis.com/css?family=Open+Sans");
 
 @import url('styler.css');
+@import url('circular_loader_001.css');
 
 
 @media (max-height: 700px) {
@@ -11,7 +12,17 @@
   
 }
 
-
+@media (min-width: 1200px){
+  
+  #title {
+    
+    top: 9px;
+    font-size: 26px;
+    letter-spacing: 5px;
+    width: 400px;
+  }
+  
+}
 
 @media (max-width: 800px), (max-height: 700px){
      
@@ -91,11 +102,11 @@
    .legend-sub-items-container{
      font: 8px "Open Sans" !important;
       margin-left: 5px !important;
-      margin-top: 1px !important;
+      margin-top: 1px;
    }
    
    .legend-header{
-     font-size: 11px !important;
+     font-size: 11px;
      margin-left: -10px !important;
      letter-spacing: 2px;
    }
@@ -107,13 +118,13 @@
    
     .legend-sub-items-container > div {
       margin-left: 5px !important;
-      margin-bottom: 2px !important;
+      margin-bottom: 2px;
     }
     .legend-sub-items-container > img {
       max-width: 10px !important;
       max-height: 10px !important;
       margin-left: 5px !important;
-      margin-bottom: 2px !important;
+      margin-bottom: 2px;
       
     }
     .legend-item{
@@ -130,6 +141,14 @@
         height: 36px !important;
         width: 90px !important;
     }
+    
+    .legend-sub-items-container > .color-chart{
+        
+        height: 40px;
+        width: 130px;
+        margin-top: -3px;
+      }
+    
     #stats-container-2{
       width: 173px !important;
       font: 8px "Open Sans" !important;   
@@ -149,22 +168,22 @@
     
     .leaflet-control-layers{
         width: 173px !important;
-        height: 286px !important;
+        height: 315px;
     
     }  
     .leaflet-control-layers-overlays{
        width: 180px !important;
-        height: 200px !important;
+        height: 210px !important;
        
     }
     .leaflet-control-layers-separator{
-      top: 213px !important;
+      top: 242px !important;
        width: 172px !important;
        
   
     }
     .leaflet-control-layers-base{
-      top: 222px !important;
+      top: 249px;
      width: 180px !important;
     }
       /*END Styles*/
@@ -334,14 +353,14 @@
     
     
     #stats-container-2 {
-      top: 30px;
+      top: 28px;
     }
     
     .leaflet-control-search {
-      margin-top: 3px !important;
+      margin-top: 1px !important;
     }
     .leaflet-control-layers {
-      top: -37px !important;
+      top: -41px !important;
     }
     
     .col-sm-4 {
@@ -367,5 +386,38 @@
     .leaflet-control-search {
       left: 177px !important;
     } 
+    .legend-item > div {
+   
+      margin-top: 0;
+    }
+    .legend-header {
+      font-size: 10px;
+    }
+    .legend-sub-items-container > .size-chart {
+      margin-bottom: 0;
+    
+    }
+    .legend-sub-items-container,
+    .legend-sub-items-container > div,
+     .legend-sub-items-container > img {
+     
+        margin-bottom: 0px;
+        margin-top: 0px;
+      
+    }
+    .leaflet-control-layers-separator{
+        top: 226px !important;
+    }
+    .leaflet-control-layers-base{
+      top: 236px;
+    }
+    .leaflet-control-layers {
+      height: 296px;
+    
+      
+    }
+    
+  
+
 }
 
