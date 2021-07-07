@@ -14,252 +14,353 @@
 
 
 @media (max-width: 800px), (max-height: 700px){
+     
+     body{
+       
+       font-size: 12px;
+     }
+     .h4, h4 {
+        font-size: 14px;
+    }
+    .modal-header{
+      padding: 5px 10px 5px 10px;
+    }
+     .modal-body{
+      padding: 5px 10px 5px 10px;
+    }
+     
+    #stats-container{
+      z-index: 0 !important;
+      border: 3px solid red !important;
+    }
+    
+    #stats-container-2{ 
+      top: 45px; 
+    }
    
+    .leaflet-control-layers{
+       top: -34px !important; 
+    }
+     
+      
+    #header {
+      height: 40px;
+      border-bottom: 2px solid #221b65 ;
+      padding: 5px 5px 5px 5px;
+      
+    }
+    
+    #header-title{
+      width: 110px;
+      height: 30px;
+    }
+    
+    #header-logo {
+      margin-top: 3px;
+      width: 24px;
+      height: 24px;
+    }
+    #showInfo {
+      width: 24px;
+      height: 24px;
+      
+    }
+    
+    #title{
+      top: 5px ;
+      margin-top: 5px ;
+      font-size: 15px;
+    }
+    
+    #Map{
+      top: 40px !important;
+      height: calc(100vh - 40px) !important;
+    }
+    
+    
+    /*Stats contatiner*/
+    
+    /**/
+    
+    /*Legend Styles*/
+  
+    .leaflet-container{
+      font: 8px "Open Sans" !important;
+    }
+    
+   .legend-sub-items-container{
+     font: 8px "Open Sans" !important;
+      margin-left: 5px !important;
+      margin-top: 1px !important;
+   }
    
-  #stats-container{
-    z-index: 0 !important;
-    border: 3px solid red !important;
+   .legend-header{
+     font-size: 11px !important;
+     margin-left: -10px !important;
+     letter-spacing: 2px;
+   }
+   
+    .legend-sub-items-container > div {
+      margin-left: 5px !important;
+      margin-bottom: 2px !important;
+    }
+    .legend-sub-items-container > img {
+      max-width: 10px !important;
+      max-height: 10px !important;
+      margin-left: 5px !important;
+      margin-bottom: 2px !important;
+      
+    }
+    .legend-item{
+      width: 160px !important;
+    }
+    
+    .legend-item > div {
+        margin-left: 5px !important;
+        margin-top: 1px !important;
+    }
+    
+    .legend-sub-items-container > .size-chart {
+      
+        height: 36px !important;
+        width: 90px !important;
+    }
+    #stats-container-2{
+      width: 173px !important;
+      font: 8px "Open Sans" !important;   
+      height: 27px !important;
+     
+    }
+    
+    #stats-container-2 > .shiny-input-container > .checkbox > label{
+      
+  
+    }
+    
+    #stats-container-2 > .shiny-input-container > .checkbox > label > input{
+      margin-top: 0 !important;
+  
+    }
+    
+    .leaflet-control-layers{
+        width: 173px !important;
+        height: 280px !important;
+    
+    }  
+    .leaflet-control-layers-overlays{
+       width: 180px !important;
+        height: 200px !important;
+       
+    }
+    .leaflet-control-layers-separator{
+      top: 196px !important;
+       width: 172px !important;
+       
+  
+    }
+    .leaflet-control-layers-base{
+      top: 210px !important;
+     width: 180px !important;
+    }
+      /*END Styles*/
+      
+  /*Map buttons*/
+  
+  .leaflet-control-search{
+      left: 177px !important;
+      margin-top: 5px !important;
+     
+  
+  }
+  .search-button {
+          width: 23px !important; 
+      height: 23px !important;
   }
   
-  #stats-container-2{ 
-    top: 45px !important; 
-  }
- 
-  .leaflet-control-layers{
-     top: -34px !important; 
-  }
-   
+  .leaflet-control-zoom {
+    left: 177px !important;
+    top: 50px ;
+    height: 50px ;
+  
     
-  #header {
-    height: 40px !important;
-    border-bottom: 2px solid #221b65 !important;
-    padding: 5px 5px 5px 5px !important;
+  }
+  .leaflet-control-zoom-in,
+  .leaflet-control-zoom-out{
+    width: 23px !important;
+      height: 23px !important;
+      line-height: 23px !important;
+      font-size: 16px !important;
+  }
+  
+      
+  /* END Map buttons*/
+    
+    
+  /*Table*/
+  .col-sm-4 {
+  
+    top: 45px;
     
   }
   
+  .well {
+    font: 8px/1.5 "Open Sans";
+    width: 265px;
+  }
+  
+  
+  .table > thead > tr > td,
+  .table > tbody > tr > td{
+    line-height: 1;
+    padding: 3px 2px 3px 2px !important;
+  }
+  
+  .table > thead > tr > td:first-child,
+  .table > tbody > tr > td:first-child{
+    /*padding: 2px 2px 2px 2px;*/
+      width: 100px;
+  }
+  
+  
+  #MarkerIcon {
+      width: 25px !important;
+      height: 25px !important;
+      margin-right: 6px;
+      margin-left: 6px;
+  }
+  #MarkerIcon > img{
+      width: 25px !important;
+      height: 25px !important;
+    
+  }
+  .table-header > #SiteNo{
+    font-size: 12px;
+       letter-spacing: 2px;
+    
+  }
+  
+  .table-header > #MarkerIconText{
+    
+    font-size: 10px;
+       letter-spacing: 2px;
+  }
+  
+  #InspectionType{
+    font-size: 10px;
+       letter-spacing: 2px;
+          margin: 6px 0 6px 0;
+  }
+  
+  #showSidebar{
+      width: 16px;
+    height: 16px;
+    padding: unset;
+  }
+  
+  #Next,#Back{
+    width: 16px;
+    height: 16px;
+    padding: 0 0 0 0 !important;
+  }
+  
+  #RecordNav {
+    font: bold 10px "Open Sans";
+  }
+  
+  #TableIndex{
+    height: 16px;
+    width: 65px;
+  }
+  /*End table*/
+  
+}
+  
+@media (max-width: 500px){
+
   #header-title{
-    width: 110px !important;
-    height: 30px !important;
-  }
-  
-  #header-logo {
-    margin-top: 3px !important;
-    width: 24px !important;
-    height: 24px !important;
-  }
-  #showInfo {
-    width: 24px !important;
-    height: 24px !important;
-    
+    width: 30px;
+    height: 30px ;
+    background-image: url('./images/cla-logo_no-text_2x.png');
   }
   
   #title{
-    top: 5px !important;
-    margin-top: 0px !important;
+    margin-top: 5px;
+        font-size: 15px;
+    letter-spacing: 3px;
   }
   
-  #Map{
-    top: 40px !important;
-    height: calc(100vh - 40px) !important;
-  }
-  
-  
-  /*Stats contatiner*/
-  
-  /**/
-  
-  /*Legend Styles*/
+}
 
-  .leaflet-container{
-    font: 8px "Open Sans" !important;
-  }
-  
- .legend-sub-items-container{
-   font: 8px "Open Sans" !important;
-    margin-left: 5px !important;
-    margin-top: 1px !important;
- }
- 
- .legend-header{
-   font-size: 11px !important;
-   margin-left: -10px !important;
-   letter-spacing: 2px;
- }
- 
-  .legend-sub-items-container > div {
-    margin-left: 5px !important;
-    margin-bottom: 2px !important;
-  }
-  .legend-sub-items-container > img {
-    max-width: 10px !important;
-    max-height: 10px !important;
-    margin-left: 5px !important;
-    margin-bottom: 2px !important;
+@media (max-height: 400px){
+
+      #header {
+      height: 26px ;
+      border-bottom: 1px solid #221b65;
+      padding: 3px 3px 3px 3px;
+      
+    }
     
-  }
-  .legend-item{
-    width: 160px !important;
-  }
-  
-  .legend-item > div {
-      margin-left: 5px !important;
-      margin-top: 1px !important;
-  }
-  
-  .legend-sub-items-container > .size-chart {
+    #header-title{
+    width: 20px;
+    height: 20px ;
+    background-image: url('./images/cla-logo_no-text_2x.png');
+    }
     
-      height: 36px !important;
-      width: 90px !important;
-  }
-  #stats-container-2{
-    width: 173px !important;
-    font: 8px "Open Sans" !important;   
-    height: 27px !important;
-   
-  }
-  
-  #stats-container-2 > .shiny-input-container > .checkbox > label{
+    #header-logo {
     
-
-  }
-  
-  #stats-container-2 > .shiny-input-container > .checkbox > label > input{
-    margin-top: 0 !important;
-
-  }
-  
-  .leaflet-control-layers{
-      width: 173px !important;
-      height: 280px !important;
-  
-  }  
-  .leaflet-control-layers-overlays{
-     width: 180px !important;
-      height: 280px !important;
-     
-  }
-  .leaflet-control-layers-separator{
-    top: 196px !important;
-     width: 172px !important;
-     
-
-  }
-  .leaflet-control-layers-base{
-    top: 210px !important;
-   width: 180px !important;
-  }
-    /*END Styles*/
+    }
+    #showInfo {
+     width: 20px;
+    height: 20px;
+    margin-top: -9px;
+    padding: 0 0 0 0;
+    }
     
-/*Map buttons*/
-
-.leaflet-control-search{
-    left: 177px !important;
-    margin-top: 5px !important;
-   
-
-}
-.search-button {
-        width: 23px !important; 
-    height: 23px !important;
-}
-
-.leaflet-control-zoom {
-  left: 177px !important;
-  top: 50px !important;
-  height: 50px !important;
-
-  
-}
-.leaflet-control-zoom-in,
-.leaflet-control-zoom-out{
-  width: 23px !important;
-    height: 23px !important;
-    line-height: 23px !important;
-    font-size: 16px !important;
-}
-
+    #title{
+      top: 3px ;
+      margin-top: 0px ;
+      font-size: 12px;
+    }
     
-/* END Map buttons*/
-  
-  
-/*Table*/
-.col-sm-4 {
-
-  top: 45px;
-  
+    #Map {
+      top: 27px !important;
+      height: calc(100vh - 27px) !important;
+    }
+    
+    
+    #stats-container-2 {
+      top: 30px;
+    }
+    
+    .leaflet-control-search {
+      margin-top: 3px !important;
+    }
+    .leaflet-control-layers {
+      top: -37px !important;
+    }
+    
+    .col-sm-4 {
+      top: 30px;
+      right: -12px;
+      
+    }
+    #InspectionType{
+      margin: 2px 0 2px 0;
+    }
+    .well{
+         padding: 5px 2px 10px 2px;
+    }
+    .leaflet-control-zoom {
+      top: 47px ;
+    }
+     .leaflet-left {
+      left: -7px;
+    }
+    #stats-container, #stats-container-2 {
+      margin-left: 4px;
+    }
+    .leaflet-control-search {
+      left: 177px !important;
+    } 
 }
 
-.well {
-  font: 8px/1.5 "Open Sans";
-  width: 265px;
-}
-
-
-.table > thead > tr > td,
-.table > tbody > tr > td{
-  line-height: 1;
-  padding: 3px 2px 3px 2px !important;
-}
-
-.table > thead > tr > td:first-child,
-.table > tbody > tr > td:first-child{
-  /*padding: 2px 2px 2px 2px;*/
-    width: 100px;
-}
-
-
-#MarkerIcon {
-    width: 25px !important;
-    height: 25px !important;
-    margin-right: 6px;
-    margin-left: 6px;
-}
-#MarkerIcon > img{
-    width: 25px !important;
-    height: 25px !important;
-  
-}
-.table-header > #SiteNo{
-  font-size: 12px;
-     letter-spacing: 2px;
-  
-}
-
-.table-header > #MarkerIconText{
-  
-  font-size: 10px;
-     letter-spacing: 2px;
-}
-
-#InspectionType{
-  font-size: 10px;
-     letter-spacing: 2px;
-        margin: 6px 0 6px 0;
-}
-
-#showSidebar{
-    width: 16px;
-  height: 16px;
-  padding: unset;
-}
-
-#Next,#Back{
-  width: 16px;
-  height: 16px;
-  padding: 0 0 0 0 !important;
-}
-
-#RecordNav {
-  font: bold 10px "Open Sans";
-}
-
-#TableIndex{
-  height: 16px;
-  width: 65px;
-}
-/*End table*/
-  
-  
-  
-  
-}
