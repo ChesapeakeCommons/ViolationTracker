@@ -8,6 +8,8 @@ library(tidyverse)
 library(lubridate)
 library(leaflet.extras)
 library(rgdal)
+library(jsonlite)
+library(scales)
 
 
 # Define UI for Application 
@@ -120,12 +122,40 @@ Facilities <- read.csv("www/Data/Facilities_v5.csv", stringsAsFactors = FALSE)
 Permits <- read.csv("www/Data/Permits_v2.csv", stringsAsFactors = FALSE)
 ColumnSelect <- read_csv("www/Data/ColumnSelectSheet_v1.csv")
 MarylandHucs <- suppressMessages(rgdal::readOGR("www/Data/MarylandHucs_v4.geojson", verbose = TRUE))
+EJWasteWater <- suppressMessages(rgdal::readOGR("www/Data/MarylandEJLayer_v6.json", verbose = TRUE))
 FacilitiesReactive <- reactiveValues(df = data.frame(Facilities))
 PermitsReactive <- reactiveValues(df = data.frame())
 PermitPage <- reactiveValues(X = as.numeric(1))
 TypeName <- c("No Issues", "Minor Issues", "Significant Issues","Repeat Non Compliance","Resolved Violation","Unresolved Violation","Enforcement Action")
 TypeCode <- c("A","B","C","D","E","F","G")
 MarkerType <- data.frame(TypeName,TypeCode)
+
+
+
+
+for(row in 1:nrow(EJWasteWater))
+{
+if(EJWasteWater$P_PWDIS_D2[row] < 50)
+{
+  EJWasteWater$Color[row] <- "#F7FBFF"
+}
+  if(EJWasteWater$P_PWDIS_D2[row] > 50)
+  {
+    EJWasteWater$Color[row] <- "#D1BEC3"
+  }
+  if(EJWasteWater$P_PWDIS_D2[row] > 75)
+  {
+    EJWasteWater$Color[row] <- "#AB8187"
+  }
+  if(EJWasteWater$P_PWDIS_D2[row] > 85)
+  {
+    EJWasteWater$Color[row] <- "#85444A"
+  }
+  if(EJWasteWater$P_PWDIS_D2[row] > 95 )
+  {
+    EJWasteWater$Color[row] <- "#5F070E"
+  }
+}
 
 
 ### ICON FUNCTION ### 
@@ -145,11 +175,10 @@ leaflet("Map")%>%
             hideGroup("Watersheds")%>%
             addMapPane("polygons", zIndex = 210)%>%
             addPolygons(data = MarylandHucs, color = "#b3b3b3", weight = 1, group = "Watersheds", options = pathOptions(pane = "polygons"), label = paste(MarylandHucs$mde8name, "Watershed", sep = " "))%>%
+            addPolygons(data = EJWasteWater, color = ~Color, weight = 1, fillOpacity = .65, opacity = .5, group = "Waste Water Vulnerability", options = pathOptions(pane = "polygons"), label = paste0("Waste Water Discharge Vulnerability: ",round(EJWasteWater$P_PWDIS_D2,0),"th percentile"))%>%
             addLayersControl(
-             
               baseGroups = c("Streets","Satellite"),
-  #           overlayGroups = groups, 
-              overlayGroups = c("Inspection", "Violation" ,"Enforcement","Watersheds"), 
+              overlayGroups = c("Inspection", "Violation" ,"Enforcement","Watersheds","Waste Water Vulnerability"), 
               position =c("topleft"), 
               options = layersControlOptions(collapsed = FALSE))%>%
             htmlwidgets::onRender(paste("
@@ -198,6 +227,14 @@ leaflet("Map")%>%
                             "<div>Watersheds</div>",
                            
                         "  </div>\"  );
+                        
+                 $( \"span:contains('EJ Layer')\" ).html(  \" ",
+                    "<div class='legend-item'>",
+                    "<div> Waste Water Vulnerability </div>",
+                    "<div class='legend-sub-items-container'>",
+                    "<img src='./Images/EJLegend.png' />",
+                    "</div>",
+                    "  </div>\"  );
                        
                         $('#stats-container').css('z-index','999');
                     $('#stats-container-2').css('z-index','999');
@@ -219,7 +256,7 @@ observe({
 if(input$Construction == FALSE)
 {
 Facilities <- FacilitiesReactive$df %>%
-              filter(Construction != 0)
+              filter(Construction == 0)
 }
 else
 {
@@ -267,7 +304,7 @@ observeEvent(input$Map_marker_click, ignoreNULL = FALSE,
 
 InfoModal <- modalDialog(
 title = HTML("<b> Chesapeake Legal Alliance's Violation Tracker </b>"),
-HTML("<b> Quick Start Instructions: </b>"),
+HTML("<b> Quick Start Instructions and Info: </b>"),
 HTML("<br>"),
 HTML("<li>"),
 HTML("Clicking a map cluster will reveal additional clusters or individual facilities."),
@@ -280,10 +317,14 @@ HTML("Use the Legend to control whether inspections, enforcement, or violations 
 HTML("<br>"),
 HTML("<li>"),
 HTML("To find more information, search the site number in the"),
-tags$a(href="http://mdewin64.mde.state.md.us/ECollaboration/SearchPortal.aspx", "Open MDE portal."),
+tags$a(href="hhttps://mdedataviewer.mde.state.md.us/", "Open MDE portal."),
 HTML("<br>"),
 HTML("<li>"),
-HTML("Use the Basemap Control to add or remove watershed boundaries, environmental justice communities, or basemaps."),
+HTML("Use the Basemap Control to add or remove watershed boundaries, waste water vulnerability, or basemaps."),
+HTML("<br>"),
+HTML("<li>"),
+HTML("Waste water vulnerability is from the EPA's EJ Screen Wastewater Discharge Indicator. For more information"),
+tags$a(href="hhttps://www.epa.gov/sites/production/files/2015-05/documents/ejscreen_technical_document_20150505.pdf#page=55", "click here."),
 HTML("<br>"),
 HTML("<br>"),
 HTML("<b> For Additional Instructions and More Information About This Tracker Tool: </b>"),
@@ -483,7 +524,8 @@ output$StatsText<- renderUI({
 # Count of Sites 
 SiteCount <- Facilities %>%
              distinct(SiteNo)%>%
-             tally()
+             tally()%>%
+             as.numeric()
 
 # Count of Inspecitons 
 InspectionCount <- nrow(Permits)
@@ -491,27 +533,30 @@ InspectionCount <- nrow(Permits)
 #NonCompliance Count 
 NonCompliance <- Permits %>%
                 filter(SiteCondition == "Noncompliance")%>%
-                tally()
+                tally()%>%
+                as.numeric()
 
 #Unresolved Sig Violation
 SignificantViolation <- Facilities %>%
                         filter(MarkerShape == "F")%>%
-                        tally()
+                        tally()%>%
+                        as.numeric()
                       
 #Enforcement 
 Enforcement <- Facilities %>%
                filter(MarkerShape == "G")%>%
-               tally()
+               tally()%>%
+               as.numeric()
 tagList(
-  HTML("<b>Inspection Reports:</b>", InspectionCount),
+  HTML("<b>Total Inspection Reports:</b>", comma(InspectionCount)),
   HTML("<br>"),
-  HTML("<b>Non Compliance Inspection Reports:</b>", paste(NonCompliance)),
+  HTML("<b>&emsp; Non Compliance:</b>", comma(NonCompliance)),
   HTML("<br>"),
-  HTML("<b>Facility Count:</b>", paste(SiteCount)),
+  HTML("<b>Total Facility Count:</b>", comma(SiteCount)),
   HTML("<br>"),
-  HTML("<b>Facilties w/ current Significant Violation:</b>", paste(SignificantViolation)),
+  HTML("<b>&emsp;Significant Violation:</b>", comma(SignificantViolation)),
   HTML("<br>"),
-  HTML("<b>Facilities with Enforcement Action taken:</b>", paste(Enforcement)),
+  HTML("<b>&emsp;Enforcement Action taken:</b>", comma(Enforcement)),
   
 )
 

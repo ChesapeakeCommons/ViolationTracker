@@ -246,6 +246,7 @@ position: relative;
   max-height: 20px;
 }
 
+
 .legend-sub-items-container > .size-chart{
   background-image: url('./Images/size-chart.png');
     background-size: cover;
