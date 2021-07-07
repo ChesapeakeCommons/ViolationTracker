@@ -314,7 +314,7 @@ position: relative;
 
 
 .well {
-  width: 400px !important;
+  width: 400px;
   
   margin-left: 0px;
   border-radius: 5px;
@@ -363,6 +363,7 @@ position: relative;
   margin-right: 10px;
   
     border: 0px solid red;
+
 }
 
 #showSidebar{
@@ -389,7 +390,7 @@ position: relative;
     display: block;
     width: 100%;
     text-align: center;
-    font: bold 14px "Open Sans" !important;
+    font: bold 14px "Open Sans";
     letter-spacing: 3px;
     margin: 10px 0 10px 0;
     
@@ -401,7 +402,7 @@ position: relative;
   display: block;
   border: 0px solid green;
   margin: 0 auto;
-  font: bold 14px "Open Sans" !important;
+  font: bold 14px "Open Sans";
   letter-spacing: 2px;
   
 

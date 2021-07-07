@@ -83,6 +83,7 @@
  .legend-header{
    font-size: 11px !important;
    margin-left: -10px !important;
+   letter-spacing: 2px;
  }
  
   .legend-sub-items-container > div {
@@ -179,6 +180,84 @@
 
     
 /* END Map buttons*/
+  
+  
+/*Table*/
+.col-sm-4 {
+
+  top: 45px;
+  
+}
+
+.well {
+  font: 8px/1.5 "Open Sans";
+  width: 265px;
+}
+
+
+.table > thead > tr > td,
+.table > tbody > tr > td{
+  line-height: 1;
+  padding: 3px 2px 3px 2px !important;
+}
+
+.table > thead > tr > td:first-child,
+.table > tbody > tr > td:first-child{
+  /*padding: 2px 2px 2px 2px;*/
+    width: 100px;
+}
+
+
+#MarkerIcon {
+    width: 25px !important;
+    height: 25px !important;
+    margin-right: 6px;
+    margin-left: 6px;
+}
+#MarkerIcon > img{
+    width: 25px !important;
+    height: 25px !important;
+  
+}
+.table-header > #SiteNo{
+  font-size: 12px;
+     letter-spacing: 2px;
+  
+}
+
+.table-header > #MarkerIconText{
+  
+  font-size: 10px;
+     letter-spacing: 2px;
+}
+
+#InspectionType{
+  font-size: 10px;
+     letter-spacing: 2px;
+        margin: 6px 0 6px 0;
+}
+
+#showSidebar{
+    width: 16px;
+  height: 16px;
+  padding: unset;
+}
+
+#Next,#Back{
+  width: 16px;
+  height: 16px;
+  padding: 0 0 0 0 !important;
+}
+
+#RecordNav {
+  font: bold 10px "Open Sans";
+}
+
+#TableIndex{
+  height: 16px;
+  width: 65px;
+}
+/*End table*/
   
   
   
