@@ -228,6 +228,13 @@ leaflet("Map")%>%
                            
                         "  </div>\"  );
                         
+                       $( \"span:contains('Vulnerability')\" ).html(  \" ",
+                          "<div class='legend-item'>",
+                          "<div>Waste Water Vulnerability</div>",
+                    
+                        "  </div>\"  );
+                        
+                        
                  $( \"span:contains('EJ Layer')\" ).html(  \" ",
                     "<div class='legend-item'>",
                     "<div> Waste Water Vulnerability </div>",
@@ -548,11 +555,11 @@ Enforcement <- Facilities %>%
                tally()%>%
                as.numeric()
 tagList(
-  HTML("<b>Total Inspection Reports:</b>", comma(InspectionCount)),
+  HTML("<b>&emsp;Total Inspection Reports:</b>", comma(InspectionCount)),
   HTML("<br>"),
-  HTML("<b>&emsp; Non Compliance:</b>", comma(NonCompliance)),
+  HTML("<b>&emsp;Non Compliance:</b>", comma(NonCompliance)),
   HTML("<br>"),
-  HTML("<b>Total Facility Count:</b>", comma(SiteCount)),
+  HTML("<b>&emsp;Total Facility Count:</b>", comma(SiteCount)),
   HTML("<br>"),
   HTML("<b>&emsp;Significant Violation:</b>", comma(SignificantViolation)),
   HTML("<br>"),

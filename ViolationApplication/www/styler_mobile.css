@@ -100,6 +100,11 @@
      letter-spacing: 2px;
    }
    
+   .leaflet-control-layers-overlays > label > div > input{
+     
+     clear: both !important;
+   }
+   
     .legend-sub-items-container > div {
       margin-left: 5px !important;
       margin-bottom: 2px !important;
@@ -144,7 +149,7 @@
     
     .leaflet-control-layers{
         width: 173px !important;
-        height: 280px !important;
+        height: 286px !important;
     
     }  
     .leaflet-control-layers-overlays{
@@ -153,13 +158,13 @@
        
     }
     .leaflet-control-layers-separator{
-      top: 196px !important;
+      top: 213px !important;
        width: 172px !important;
        
   
     }
     .leaflet-control-layers-base{
-      top: 210px !important;
+      top: 222px !important;
      width: 180px !important;
     }
       /*END Styles*/
