@@ -110,7 +110,9 @@ ui <- fluidPage(
                 actionButton("Back",""),
             #    textOutput("InspectionType"),  
                 textOutput("TableIndex"),
-              
+            div(id = "Search-Link",
+                tags$a(href="https://mdedataviewer.mde.state.md.us/", "Click for More Info"),
+            ),
               HTML("</div>"),
                 
                   HTML("</div>"),  
@@ -182,10 +184,10 @@ leaflet("Map")%>%
             hideGroup("Watersheds")%>%
             addMapPane("polygons", zIndex = 210)%>%
             addPolygons(data = MarylandHucs, color = "#b3b3b3", weight = 1, group = "Watersheds", options = pathOptions(pane = "polygons"), label = paste(MarylandHucs$mde8name, "Watershed", sep = " "))%>%
-            addPolygons(data = EJWasteWater, color = ~Color, weight = 1, fillOpacity = .65, opacity = .5, group = "EJ Waste Water Vulnerability Percentile", options = pathOptions(pane = "polygons"), label = paste0("Waste Water Discharge Vulnerability: ",round(EJWasteWater$P_PWDIS_D2,1),"th Percentile"))%>%
+            addPolygons(data = EJWasteWater, color = ~Color, weight = 1, fillOpacity = .65, opacity = .5, group = "EJ Waste Water Vulnerability Pct.", options = pathOptions(pane = "polygons"), label = paste0("Waste Water Discharge Vulnerability: ",round(EJWasteWater$P_PWDIS_D2,1),"th Pct."))%>%
             addLayersControl(
               baseGroups = c("Streets","Satellite"),
-              overlayGroups = c("Inspection", "Violation" ,"Enforcement","Watersheds","EJ Waste Water Vulnerability Percentile"), 
+              overlayGroups = c("Inspection", "Violation" ,"Enforcement","Watersheds","EJ Waste Water Vulnerability Pct."), 
               position =c("topleft"), 
               options = layersControlOptions(collapsed = FALSE))%>%
             htmlwidgets::onRender(paste("
@@ -237,7 +239,7 @@ leaflet("Map")%>%
                         
                        $( \"span:contains('Vulnerability')\" ).html(  \" ",
                           "<div class='legend-item'>",
-                            "<div>EJ Waste Water Vulnerability Percentile </div>",
+                            "<div>EJ Waste Water Vulnerability Pct. </div>",
                             "<div class='legend-sub-items-container'>",
                                 "<div class='color-chart' ><div>",
                             "</div>",
@@ -246,7 +248,7 @@ leaflet("Map")%>%
                         
                  $( \"span:contains('EJ Layer')\" ).html(  \" ",
                     "<div class='legend-item'>",
-                    "<div> EJ Waste Water Vulnerability Percentile </div>",
+                    "<div> EJ Waste Water Vulnerability Pct. </div>",
                     "<div class='legend-sub-items-container'>",
                     "<img src='./Images/EJLegend.png' />",
                     "</div>",
@@ -333,14 +335,14 @@ HTML("Use the Legend to control whether inspections, enforcement, or violations 
 HTML("<br>"),
 HTML("<li>"),
 HTML("To find more information, search the site number in the"),
-tags$a(href="hhttps://mdedataviewer.mde.state.md.us/", "Open MDE portal."),
+tags$a(href="https://mdedataviewer.mde.state.md.us/", "Open MDE portal."),
 HTML("<br>"),
 HTML("<li>"),
 HTML("Use the Basemap Control to add or remove watershed boundaries, waste water vulnerability, or basemaps."),
 HTML("<br>"),
 HTML("<li>"),
 HTML("Waste water vulnerability is from the EPA's EJ Screen Wastewater Discharge Indicator. For more information"),
-tags$a(href="hhttps://www.epa.gov/sites/production/files/2015-05/documents/ejscreen_technical_document_20150505.pdf#page=55", "click here."),
+tags$a(href="https://www.epa.gov/sites/production/files/2015-05/documents/ejscreen_technical_document_20150505.pdf#page=55", "click here."),
 HTML("<br>"),
 HTML("<br>"),
 HTML("<b> For Additional Instructions and More Information About This Tracker Tool: </b>"),
@@ -566,13 +568,13 @@ Enforcement <- Facilities %>%
 tagList(
   HTML("<b>&emsp;Total Inspection Reports:</b>", comma(InspectionCount)),
   HTML("<br>"),
-  HTML("<b>&emsp;Non Compliance:</b>", comma(NonCompliance)),
+  HTML("<b> &emsp; &emsp; Non Compliance:</b>", comma(NonCompliance)),
   HTML("<br>"),
-  HTML("<b>&emsp;Total Facility Count:</b>", comma(SiteCount)),
+  HTML("<b>&emsp; Total Facility Count:</b>", comma(SiteCount)),
   HTML("<br>"),
-  HTML("<b>&emsp;Significant Violation:</b>", comma(SignificantViolation)),
+  HTML("<b>&emsp; &emsp; Significant Violation:</b>", comma(SignificantViolation)),
   HTML("<br>"),
-  HTML("<b>&emsp;Enforcement Action taken:</b>", comma(Enforcement)),
+  HTML("<b>&emsp; &emsp; Enforcement Action taken:</b>", comma(Enforcement)),
   
 )
 
