@@ -182,10 +182,10 @@ leaflet("Map")%>%
             hideGroup("Watersheds")%>%
             addMapPane("polygons", zIndex = 210)%>%
             addPolygons(data = MarylandHucs, color = "#b3b3b3", weight = 1, group = "Watersheds", options = pathOptions(pane = "polygons"), label = paste(MarylandHucs$mde8name, "Watershed", sep = " "))%>%
-            addPolygons(data = EJWasteWater, color = ~Color, weight = 1, fillOpacity = .65, opacity = .5, group = "Waste Water Vulnerability", options = pathOptions(pane = "polygons"), label = paste0("Waste Water Discharge Vulnerability: ",round(EJWasteWater$P_PWDIS_D2,0),"th percentile"))%>%
+            addPolygons(data = EJWasteWater, color = ~Color, weight = 1, fillOpacity = .65, opacity = .5, group = "EJ Waste Water Vulnerability Percentile", options = pathOptions(pane = "polygons"), label = paste0("Waste Water Discharge Vulnerability: ",round(EJWasteWater$P_PWDIS_D2,1),"th Percentile"))%>%
             addLayersControl(
               baseGroups = c("Streets","Satellite"),
-              overlayGroups = c("Inspection", "Violation" ,"Enforcement","Watersheds","Waste Water Vulnerability"), 
+              overlayGroups = c("Inspection", "Violation" ,"Enforcement","Watersheds","EJ Waste Water Vulnerability Percentile"), 
               position =c("topleft"), 
               options = layersControlOptions(collapsed = FALSE))%>%
             htmlwidgets::onRender(paste("
@@ -237,7 +237,7 @@ leaflet("Map")%>%
                         
                        $( \"span:contains('Vulnerability')\" ).html(  \" ",
                           "<div class='legend-item'>",
-                            "<div>Waste Water Vulnerability</div>",
+                            "<div>EJ Waste Water Vulnerability Percentile </div>",
                             "<div class='legend-sub-items-container'>",
                                 "<div class='color-chart' ><div>",
                             "</div>",
@@ -246,7 +246,7 @@ leaflet("Map")%>%
                         
                  $( \"span:contains('EJ Layer')\" ).html(  \" ",
                     "<div class='legend-item'>",
-                    "<div> Waste Water Vulnerability </div>",
+                    "<div> EJ Waste Water Vulnerability Percentile </div>",
                     "<div class='legend-sub-items-container'>",
                     "<img src='./Images/EJLegend.png' />",
                     "</div>",
