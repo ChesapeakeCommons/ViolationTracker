@@ -53,15 +53,11 @@ ui <- fluidPage(
     leafletOutput("Map", height = 'calc(100vh - 75px)', width = '100%'),
     
     div(id = 'stats-container',
-        HTML('<label class="legend-header" style="width: 100%" >Totals</label>'),
+        HTML('<label class="legend-header" style="width: 100%" >Totals (2016-2020) </label>'),
         uiOutput("StatsText"),
     ),
-    
     div(id = 'stats-container-2',
       checkboxInput("Construction", "Include Construction Permits"),
-      
-      
-      
     )
   ),
   
@@ -111,7 +107,7 @@ ui <- fluidPage(
             #    textOutput("InspectionType"),  
                 textOutput("TableIndex"),
             div(id = "Search-Link",
-                tags$a(href="https://mdedataviewer.mde.state.md.us/", "Click for More Info"),
+                tags$a(href="https://mdedataviewer.mde.state.md.us/", "Click for More Info",  target="_blank"),
             ),
               HTML("</div>"),
                 
@@ -335,18 +331,18 @@ HTML("Use the Legend to control whether inspections, enforcement, or violations 
 HTML("<br>"),
 HTML("<li>"),
 HTML("To find more information, search the site number in the"),
-tags$a(href="https://mdedataviewer.mde.state.md.us/", "Open MDE portal."),
+tags$a(href="https://mdedataviewer.mde.state.md.us/", "Open MDE portal.",  target="_blank"),
 HTML("<br>"),
 HTML("<li>"),
 HTML("Use the Basemap Control to add or remove watershed boundaries, waste water vulnerability, or basemaps."),
 HTML("<br>"),
 HTML("<li>"),
 HTML("Waste water vulnerability is from the EPA's EJ Screen Wastewater Discharge Indicator. For more information"),
-tags$a(href="https://www.epa.gov/sites/production/files/2015-05/documents/ejscreen_technical_document_20150505.pdf#page=55", "click here."),
+tags$a(href="https://www.epa.gov/sites/production/files/2015-05/documents/ejscreen_technical_document_20150505.pdf#page=55", "click here.",  target="_blank"),
 HTML("<br>"),
 HTML("<br>"),
 HTML("<b> For Additional Instructions and More Information About This Tracker Tool: </b>"),
-tags$a(href="https://www.chesapeakelegal.org/", "Click Here."),
+tags$a(href="https://www.chesapeakelegal.org/", "Click Here.",  target="_blank"),
 
 easyClose = TRUE,
 footer = NULL,
