@@ -251,7 +251,7 @@ leaflet("Map")%>%
                        
                         $('#stats-container').css('z-index','999');
                     $('#stats-container-2').css('z-index','999');
-                       
+                    $('.leaflet-control-search > input').attr('placeholder', 'Search Address');
                  /*   $('#stats-container').css('display','block');
                     $('#stats-container-2').css('display','block');
                 */
@@ -316,27 +316,28 @@ observeEvent(input$Map_marker_click, ignoreNULL = FALSE,
              })
 
 InfoModal <- modalDialog(
-title = HTML("<b> Chesapeake Legal Alliance's Violation Tracker </b>"),
+title = HTML("<b> Chesapeake Legal Alliance's Maryland Violation Tracker </b>"),
 HTML("<b> Quick Start Instructions and Info: </b>"),
 HTML("<br>"),
 HTML("<li>"),
-HTML("Clicking a map cluster will reveal additional clusters or individual facilities."),
+HTML("Clicking a map cluster reveals additional clusters or individual permitted water pollution sites."),
 HTML("<br>"),
 HTML("<li>"),
-HTML("Click a facility to open an information table with its permit history."),
+HTML("Click a facility to open an info table with water pollution permit history."),
 HTML("<br>"),
 HTML("<li>"),
 HTML("Use the Legend to control whether inspections, enforcement, or violations appear on the map."),
 HTML("<br>"),
 HTML("<li>"),
-HTML("To find more information, search the site number in the"),
+HTML("All inspection, enforcement, and compliance data is pulled from Maryland Department of Environment’s Open MDE Portal. 
+     For more info, search the site number in the"),
 tags$a(href="https://mdedataviewer.mde.state.md.us/", "Open MDE portal.",  target="_blank"),
 HTML("<br>"),
 HTML("<li>"),
 HTML("Use the Basemap Control to add or remove watershed boundaries, waste water vulnerability, or basemaps."),
 HTML("<br>"),
 HTML("<li>"),
-HTML("Waste water vulnerability is from the EPA's EJ Screen Wastewater Discharge Indicator. For more information"),
+HTML("Wastewater vulnerability is from the EPA's EJ Screen Wastewater Discharge Indicator. For more information"),
 tags$a(href="https://www.epa.gov/sites/production/files/2015-05/documents/ejscreen_technical_document_20150505.pdf#page=55", "click here.",  target="_blank"),
 HTML("<br>"),
 HTML("<br>"),
