@@ -162,7 +162,6 @@ if(EJWasteWater$P_PWDIS_D2[row] < 50)
   }
 }
 
-
 ### ICON FUNCTION ### 
 MapIconMaker <- function(Type, Size)
 {
@@ -183,7 +182,7 @@ leaflet("Map")%>%
             addPolygons(data = EJWasteWater, color = ~Color, weight = 1, fillOpacity = .65, opacity = .5, group = "EJ Waste Water Vulnerability Pct.", options = pathOptions(pane = "polygons"), label = paste0("Waste Water Discharge Vulnerability: ",round(EJWasteWater$P_PWDIS_D2,1),"th Pct."))%>%
             addLayersControl(
               baseGroups = c("Streets","Satellite"),
-              overlayGroups = c("Inspection", "Violation" ,"Enforcement","Watersheds","EJ Waste Water Vulnerability Pct."), 
+              overlayGroups = c("Inspection", "Violation" ,"Enforcement","EJ Waste Water Vulnerability Pct.","Watersheds"), 
               position =c("topleft"), 
               options = layersControlOptions(collapsed = FALSE))%>%
             htmlwidgets::onRender(paste("
@@ -220,7 +219,7 @@ leaflet("Map")%>%
                             
                        $( \"span:contains('Enforcement')\" ).html(  \" ",
                           "<div class='legend-item'>",
-                            "<div>Enforcement Action</div>",
+                            "<div>Enforcement History</div>",
                             "<div class='legend-sub-items-container'>",
                               "<img src='./Images/Markers/G.png' />",
                             "</div>",

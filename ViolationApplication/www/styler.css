@@ -86,7 +86,7 @@ background-image: url('./Images/cla-logo_w.png');
 
   background-color: #3d5c8a;
   
-   background-image: url('./images/gradient.png');
+   background-image: url('./Images/gradient.png');
     background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -125,7 +125,7 @@ background-image: url('./Images/cla-logo_w.png');
   
 /* align-self: flex-start;
   */
-  background-image: url('./images/cla-logo_v001.png');
+  background-image: url('./Images/cla-logo_v001.png');
     background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -166,7 +166,7 @@ position: relative;
   /*
   align-self: flex-end;
 */
-   background-image: url('./images/James+River+Association_Gradient_rgb.png');
+   background-image: url('./Images/James+River+Association_Gradient_rgb.png');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
