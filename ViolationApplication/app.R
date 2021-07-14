@@ -533,7 +533,6 @@ output$MarkerIconText <- renderText({
 })
 
 output$StatsText<- renderUI({
-
 # Count of Sites 
 SiteCount <- Facilities %>%
              distinct(SiteNo)%>%
@@ -561,16 +560,11 @@ Enforcement <- Facilities %>%
                tally()%>%
                as.numeric()
 tagList(
-  HTML("<b>&emsp;Total Inspection Reports:</b>", comma(InspectionCount)),
-  HTML("<br>"),
-  HTML("<b> &emsp; &emsp; Non Compliance:</b>", comma(NonCompliance)),
-  HTML("<br>"),
-  HTML("<b>&emsp; Total Facility Count:</b>", comma(SiteCount)),
-  HTML("<br>"),
-  HTML("<b>&emsp; &emsp; Significant Violation:</b>", comma(SignificantViolation)),
-  HTML("<br>"),
-  HTML("<b>&emsp; &emsp; Enforcement Action taken:</b>", comma(Enforcement)),
-  
+  HTML("<b>&emsp;Total Inspection Reports:</b>", comma(InspectionCount),"<br>
+        <b>&emsp; &emsp;Non Compliance:</b>", comma(NonCompliance),"<br>
+        <b>&emsp;Total Facility Count:</b>", comma(SiteCount),"<br>
+        <b>&emsp;&emsp;Significant Violation:</b>", comma(SignificantViolation),"<br>
+        <b>&emsp;&emsp;Enforcement Action taken:</b>", comma(Enforcement)),
 )
 
 })

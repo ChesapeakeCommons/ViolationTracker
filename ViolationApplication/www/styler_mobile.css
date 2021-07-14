@@ -112,7 +112,7 @@
    }
    
    .leaflet-control-layers-overlays > label > div > input{
-     
+     margin-top: -1px;
      clear: both !important;
    }
    

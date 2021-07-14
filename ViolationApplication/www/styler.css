@@ -197,7 +197,7 @@ position: relative;
 
 
 .leaflet-container{
-    font:12px/1.5 "Open Sans";
+    font:13px "Open Sans";
 }
 
 
@@ -547,7 +547,7 @@ margin-top: 5px;
 
 #StatsText{
   font-family: "Open Sans" !important;
-  font-size: 11px;
+  font-size: 13px;
 }
 
 #stats-container{
@@ -582,7 +582,7 @@ margin-top: 5px;
   margin-left: 10px;
   margin-bottom: 10px;
   
-  font:11px/1.5 "Open Sans" ;
+  font:13px "Open Sans" ;
   
 }
 
