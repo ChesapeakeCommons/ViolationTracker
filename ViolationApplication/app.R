@@ -35,19 +35,11 @@ ui <- fluidPage(
       div(id = "title",
           HTML("Violation Tracker")
       ),
-     
       div(id = "header-logo",
           actionButton("showInfo", ""),
       ),
-     
-      
-      
-      
   ),      
   #END Header
-  
-  
-
   mainPanel(
     
     leafletOutput("Map", height = 'calc(100vh - 75px)', width = '100%'),
@@ -81,22 +73,13 @@ ui <- fluidPage(
                   textOutput("SiteNo"),          
                   textOutput("MarkerIconText"),
                   textOutput("InspectionType"),  
-                  
-                
                 HTML("</div>"),  
-          
                 HTML("<div>
                         <div>"),
-                  
-                
-                
                 HTML("    </div>
                      </div>
                      "),
-                  
-                
-            
-             
+
                 tableOutput("Table"),
                      
               
@@ -104,7 +87,6 @@ ui <- fluidPage(
               
                 actionButton("Next", ""),
                 actionButton("Back",""),
-            #    textOutput("InspectionType"),  
                 textOutput("TableIndex"),
             div(id = "Search-Link",
                 tags$a(href="https://mdedataviewer.mde.state.md.us/", "Click for More Info",  target="_blank"),
@@ -135,9 +117,7 @@ TypeName <- c("No Issues", "Minor Issues", "Significant Issues","Repeat Non Comp
 TypeCode <- c("A","B","C","D","E","F","G")
 MarkerType <- data.frame(TypeName,TypeCode)
 
-
-
-
+### Adding symbology to the EJ Layer
 for(row in 1:nrow(EJWasteWater))
 {
 if(EJWasteWater$P_PWDIS_D2[row] < 50)
@@ -169,6 +149,45 @@ Icon <- makeIcon(iconUrl = paste("www/Images/Markers/",Type,".png", sep = ""), i
 return(Icon)
 }
 
+
+### Help info Dialog ### 
+InfoModal <- modalDialog(
+  title = HTML("<b> Chesapeake Legal Alliance's Maryland Violation Tracker </b>"),
+  HTML("<b> Quick Start Instructions and Info: </b>"),
+  HTML("<br>"),
+  HTML("<li>"),
+  HTML("Clicking a map cluster reveals additional clusters or individual permitted water pollution sites."),
+  HTML("<br>"),
+  HTML("<li>"),
+  HTML("Click a facility to open an info table with water pollution permit history."),
+  HTML("<br>"),
+  HTML("<li>"),
+  HTML("Use the Legend to control whether inspections, enforcement, or violations appear on the map."),
+  HTML("<br>"),
+  HTML("<li>"),
+  HTML("All inspection, enforcement, and compliance data is pulled from Maryland Department of Environment’s Open MDE Portal. 
+     For more info, search the site number in the"),
+  tags$a(href="https://mdedataviewer.mde.state.md.us/", "Open MDE portal.",  target="_blank"),
+  HTML("<br>"),
+  HTML("<li>"),
+  HTML("Use the Basemap Control to add or remove watershed boundaries, waste water vulnerability, or basemaps."),
+  HTML("<br>"),
+  HTML("<li>"),
+  HTML("Wastewater vulnerability is from the EPA's EJ Screen Wastewater Discharge Indicator. For more information"),
+  tags$a(href="https://www.epa.gov/sites/production/files/2015-05/documents/ejscreen_technical_document_20150505.pdf#page=55", "click here.",  target="_blank"),
+  HTML("<br>"),
+  HTML("<br>"),
+  HTML("<b> For Additional Instructions and More Information About This Tracker Tool: </b>"),
+  tags$a(href="https://www.chesapeakelegal.org/", "Click Here.",  target="_blank"),
+  
+  easyClose = TRUE,
+  footer = NULL,
+)
+
+## show info Toggles 
+observeEvent(input$showInfo, {
+  showModal(InfoModal)
+})
 
 ### MAP ### 
 output$Map <- renderLeaflet({
@@ -263,6 +282,42 @@ leaflet("Map")%>%
   # options = pathOptions(pane = "polygons"),
 })
 
+output$StatsText<- renderUI({
+  # Count of Sites 
+  SiteCount <- Facilities %>%
+    distinct(SiteNo)%>%
+    tally()%>%
+    as.numeric()
+  
+  # Count of Inspecitons 
+  InspectionCount <- nrow(Permits)
+  
+  #NonCompliance Count 
+  NonCompliance <- Permits %>%
+    filter(SiteCondition == "Noncompliance")%>%
+    tally()%>%
+    as.numeric()
+  
+  #Unresolved Sig Violation
+  SignificantViolation <- Facilities %>%
+    filter(MarkerShape == "F")%>%
+    tally()%>%
+    as.numeric()
+  
+  #Enforcement 
+  Enforcement <- Facilities %>%
+    filter(MarkerShape == "G")%>%
+    tally()%>%
+    as.numeric()
+  tagList(
+    HTML("<b>&emsp;Total Inspection Reports:</b>", comma(InspectionCount),"<br>
+        <b>&emsp; &emsp;Non Compliance:</b>", comma(NonCompliance),"<br>
+        <b>&emsp;Total Facility Count:</b>", comma(SiteCount),"<br>
+        <b>&emsp;&emsp;Significant Violation:</b>", comma(SignificantViolation),"<br>
+        <b>&emsp;&emsp;Enforcement Action taken:</b>", comma(Enforcement)),
+  )
+})
+
 
 ### Map Update ### 
 observe({
@@ -295,7 +350,7 @@ addMarkers(data = Violation, group = "Violation", lng = ~Longitude, lat = ~Latit
 addMarkers(data = Enforcement, group = "Enforcement", lng = ~Longitude, lat = ~Latitude, layerId = ~SiteNo, label = ~ paste("Site #:",SiteNo), icon = ~MapIconMaker(MarkerShape,MarkerSize), clusterOptions = markerClusterOptions(maxClusterRadius = 100, zoomToBoundsOnClick = TRUE, showCoverageOnHover = FALSE))
 })
 
-## Changing the PermitReactive to represent only the selected permits
+## Observing Map click and changing the PermitReactive to represent only the selected permits
 observeEvent(input$Map_marker_click, ignoreNULL = FALSE,
              {
                if(is.null(input$Map_marker_click))
@@ -315,47 +370,16 @@ observeEvent(input$Map_marker_click, ignoreNULL = FALSE,
                 }
              })
 
-InfoModal <- modalDialog(
-title = HTML("<b> Chesapeake Legal Alliance's Maryland Violation Tracker </b>"),
-HTML("<b> Quick Start Instructions and Info: </b>"),
-HTML("<br>"),
-HTML("<li>"),
-HTML("Clicking a map cluster reveals additional clusters or individual permitted water pollution sites."),
-HTML("<br>"),
-HTML("<li>"),
-HTML("Click a facility to open an info table with water pollution permit history."),
-HTML("<br>"),
-HTML("<li>"),
-HTML("Use the Legend to control whether inspections, enforcement, or violations appear on the map."),
-HTML("<br>"),
-HTML("<li>"),
-HTML("All inspection, enforcement, and compliance data is pulled from Maryland Department of Environment’s Open MDE Portal. 
-     For more info, search the site number in the"),
-tags$a(href="https://mdedataviewer.mde.state.md.us/", "Open MDE portal.",  target="_blank"),
-HTML("<br>"),
-HTML("<li>"),
-HTML("Use the Basemap Control to add or remove watershed boundaries, waste water vulnerability, or basemaps."),
-HTML("<br>"),
-HTML("<li>"),
-HTML("Wastewater vulnerability is from the EPA's EJ Screen Wastewater Discharge Indicator. For more information"),
-tags$a(href="https://www.epa.gov/sites/production/files/2015-05/documents/ejscreen_technical_document_20150505.pdf#page=55", "click here.",  target="_blank"),
-HTML("<br>"),
-HTML("<br>"),
-HTML("<b> For Additional Instructions and More Information About This Tracker Tool: </b>"),
-tags$a(href="https://www.chesapeakelegal.org/", "Click Here.",  target="_blank"),
-
-easyClose = TRUE,
-footer = NULL,
-)
-
-## Sidebar Toggles 
-observeEvent(input$showInfo, {
-showModal(InfoModal)
-})
 
 ## Sidebar Toggles 
 observeEvent(input$showSidebar, {
   shinyjs::toggle(id = "Table")
+})
+
+output$SiteNo <- renderText({
+  req(input$Map_marker_click$id)
+  SiteNo <- paste("Site No. ",input$Map_marker_click$id)
+  return(SiteNo)
 })
 
 ## Inspection Type Text
@@ -389,37 +413,7 @@ output$InspectionType <- renderText({
   
 })
 
-output$SiteNo <- renderText({
-req(input$Map_marker_click$id)
-SiteNo <- paste("Site No. ",input$Map_marker_click$id)
-return(SiteNo)
-})
-
-## Next Button for Table 
-observeEvent(input$Next, {
-  if(PermitPage$X < nrow(PermitsReactive$df))
-  {
-    PermitPage$X <- PermitPage$X + 1
-  }
-})
-
-## Back Button for Table 
-observeEvent(input$Back, {
-  if(PermitPage$X > 1)
-  {
-    PermitPage$X <- PermitPage$X - 1
-  }
-})
-
-## Table Index Text 
-output$TableIndex <- renderText({
-  if(nrow(PermitsReactive$df) != 0)
-  {
-    Index <- paste(PermitPage$X, "of", nrow(PermitsReactive$df))
-    return(Index)
-  }    
-})
-
+### Assembles the table based on facility, also orders and selects variables based on Column Select
 TableContentMaker <- function(DF,Id)
 {
   TableContent <- DF %>%
@@ -485,21 +479,23 @@ output$Table <- renderTable({
 # width = "190px"
 )
 
-output$TableText <- renderUI({
-  PermitPrint <- TableContentMaker(PermitsReactive$df, PermitPage$X)
-  
-  ## Adding Watershed Names from the facilities file
-  V1 <- FacilitiesReactive$df %>%
-    filter(SiteNo == input$Map_marker_click$id)%>%
-    select(mde8name)%>%
-    pull()
-  
-  NewName <- "Watershed:"
-  
-  Watershed <- data.frame(NewName, V1)
-  
-  FullPermitPrint <- rbind(Watershed,PermitPrint)
-})
+
+# ### Renders table from Table Content Maker 
+# output$TableText <- renderUI({
+#   PermitPrint <- TableContentMaker(PermitsReactive$df, PermitPage$X)
+#   
+#   ## Adding Watershed Names from the facilities file
+#   V1 <- FacilitiesReactive$df %>%
+#     filter(SiteNo == input$Map_marker_click$id)%>%
+#     select(mde8name)%>%
+#     pull()
+#   
+#   NewName <- "Watershed:"
+#   
+#   Watershed <- data.frame(NewName, V1)
+#   
+#   FullPermitPrint <- rbind(Watershed,PermitPrint)
+# })
 
 
 #Marker Icon for showing in the render table 
@@ -516,7 +512,7 @@ output$MarkerIcon <- renderImage({
 },deleteFile = FALSE)
 
 
-
+## Marker Icon Tet
 output$MarkerIconText <- renderText({
   req(input$Map_marker_click)
   
@@ -529,46 +525,35 @@ output$MarkerIconText <- renderText({
                     select(TypeName)%>%
                     pull()%>%
                     as.character()
-  
-
 })
 
-output$StatsText<- renderUI({
-# Count of Sites 
-SiteCount <- Facilities %>%
-             distinct(SiteNo)%>%
-             tally()%>%
-             as.numeric()
 
-# Count of Inspecitons 
-InspectionCount <- nrow(Permits)
-
-#NonCompliance Count 
-NonCompliance <- Permits %>%
-                filter(SiteCondition == "Noncompliance")%>%
-                tally()%>%
-                as.numeric()
-
-#Unresolved Sig Violation
-SignificantViolation <- Facilities %>%
-                        filter(MarkerShape == "F")%>%
-                        tally()%>%
-                        as.numeric()
-                      
-#Enforcement 
-Enforcement <- Facilities %>%
-               filter(MarkerShape == "G")%>%
-               tally()%>%
-               as.numeric()
-tagList(
-  HTML("<b>&emsp;Total Inspection Reports:</b>", comma(InspectionCount),"<br>
-        <b>&emsp; &emsp;Non Compliance:</b>", comma(NonCompliance),"<br>
-        <b>&emsp;Total Facility Count:</b>", comma(SiteCount),"<br>
-        <b>&emsp;&emsp;Significant Violation:</b>", comma(SignificantViolation),"<br>
-        <b>&emsp;&emsp;Enforcement Action taken:</b>", comma(Enforcement)),
-)
-
+## Next Button for Table 
+observeEvent(input$Next, {
+  if(PermitPage$X < nrow(PermitsReactive$df))
+  {
+    PermitPage$X <- PermitPage$X + 1
+  }
 })
+
+## Back Button for Table 
+observeEvent(input$Back, {
+  if(PermitPage$X > 1)
+  {
+    PermitPage$X <- PermitPage$X - 1
+  }
+})
+
+## Table Index Text 
+output$TableIndex <- renderText({
+  if(nrow(PermitsReactive$df) != 0)
+  {
+    Index <- paste(PermitPage$X, "of", nrow(PermitsReactive$df))
+    return(Index)
+  }    
+})
+
+
 
 }
 
