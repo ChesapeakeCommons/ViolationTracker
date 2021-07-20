@@ -479,25 +479,6 @@ output$Table <- renderTable({
 # width = "190px"
 )
 
-
-# ### Renders table from Table Content Maker 
-# output$TableText <- renderUI({
-#   PermitPrint <- TableContentMaker(PermitsReactive$df, PermitPage$X)
-#   
-#   ## Adding Watershed Names from the facilities file
-#   V1 <- FacilitiesReactive$df %>%
-#     filter(SiteNo == input$Map_marker_click$id)%>%
-#     select(mde8name)%>%
-#     pull()
-#   
-#   NewName <- "Watershed:"
-#   
-#   Watershed <- data.frame(NewName, V1)
-#   
-#   FullPermitPrint <- rbind(Watershed,PermitPrint)
-# })
-
-
 #Marker Icon for showing in the render table 
 output$MarkerIcon <- renderImage({
   req(input$Map_marker_click)
