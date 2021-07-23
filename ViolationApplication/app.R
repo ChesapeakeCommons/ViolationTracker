@@ -49,7 +49,9 @@ ui <- fluidPage(
         uiOutput("StatsText"),
     ),
     div(id = 'stats-container-2',
-      checkboxInput("Construction", "Include Construction Permits"),
+    #  checkboxInput("Construction", "Include Construction Permits"),
+      HTML('<input id="Construction" style="width: 13px !important; height: 13px !important; max-height: 13px !important; max-width: 13px !important;" type="checkbox" data-shinyjs-resettable-id="Construction" data-shinyjs-resettable-type="Checkbox" data-shinyjs-resettable-value="false" class="shinyjs-resettable shiny-bound-input leaflet-control-layers-selector">'),
+      HTML('<span>Include Construction Permits</span>')
     )
   ),
   
@@ -273,6 +275,12 @@ leaflet("Map")%>%
                     $('.leaflet-control-search > input').attr('placeholder', 'Search Address');
                  /*   $('#stats-container').css('display','block');
                     $('#stats-container-2').css('display','block');
+                    
+                     $('#Construction').css({
+                        'max-width':'13px !important',
+                        'max-height' : '13px !important',
+                        'color' : 'red'
+                     });
                 */
                 }     
             "))%>%

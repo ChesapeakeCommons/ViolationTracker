@@ -8,8 +8,21 @@
 
 @media (max-height: 700px) {
   
-
-  
+ .leaflet-control-layers-separator{
+       /* top: 226px !important;*/
+         top: 241px !important;
+    }
+    .leaflet-control-layers-base{
+     /* top: 236px; */
+      top: 250px !important;
+    }
+    .leaflet-control-layers {
+     /* height: 296px*/;
+       height: 311px;
+    }
+    .leaflet-control-layers-separator {
+      display: none;
+    }
 }
 
 @media (min-width: 1200px){
@@ -176,15 +189,26 @@
         height: 210px !important;
        
     }
-    .leaflet-control-layers-separator{
+  /*  .leaflet-control-layers-separator{
       top: 242px !important;
        width: 172px !important;
        
-  
     }
     .leaflet-control-layers-base{
       top: 249px;
      width: 180px !important;
+    }
+    */
+    .leaflet-control-layers-separator{
+       /* top: 226px !important;*/
+         top: 241px !important;
+          width: 172px !important;
+          display: none;
+    }
+    .leaflet-control-layers-base{
+     /* top: 236px; */
+      top: 250px !important;
+      width: 180px !important;
     }
       /*END Styles*/
       
@@ -313,6 +337,20 @@
     letter-spacing: 3px;
   }
   
+   .leaflet-control-layers-separator{
+       /* top: 226px !important;*/
+         top: 241px !important;
+         display: none;
+    }
+    .leaflet-control-layers-base{
+     /* top: 236px; */
+      top: 260px !important;
+    }
+    .leaflet-control-layers {
+     /* height: 296px*/;
+       height: 321px;
+    }
+  
 }
 
 @media (max-height: 400px){
@@ -406,16 +444,20 @@
       
     }
     .leaflet-control-layers-separator{
-        top: 226px !important;
+       /* top: 226px !important;*/
+         top: 241px !important;
+         display: none;
     }
     .leaflet-control-layers-base{
-      top: 236px;
+     /* top: 236px; */
+      top: 250px !important;
     }
     .leaflet-control-layers {
-      height: 296px;
+     /* height: 296px*/;
+       height: 311px;
     
-      
     }
+    
     
   
 }

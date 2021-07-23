@@ -17,7 +17,7 @@ html {
 
 body{
 
-    background-image: url('./Images/cla-logo_w.png');
+ /*   background-image: url('./Images/cla-logo_w.png');*/
   
 /*    background-image: url('./images/cla-logo_bw.png');
 */    background-repeat: no-repeat;
@@ -50,7 +50,8 @@ body{
   left: 0;
   z-index: 100;
   width: 100%;
-  height: 100vh;
+  /*height: 100vh;*/
+  height: 100%;
 
     
   
@@ -658,3 +659,54 @@ margin-top: 5px;
     height: 100vh;
 
 }
+
+/*checkbox*/
+
+.leaflet-control-layers-selector, #Construction{
+	display: none;
+}
+
+.leaflet-control-layers-selector, #Construction{
+	background-color: #fafafa;
+	border: 1px solid #cacece;
+	box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0px -15px 10px -12px rgba(0,0,0,0.05);
+	padding: 9px;
+	border-radius: 3px;
+	display: inline-block;
+	top: 0px;
+	left: 2px;
+	margin-right: 0px;
+	width: 13px !important;
+/*	position: relative; */
+}
+
+.leaflet-control-layers-selector:active,  
+.leaflet-control-layers-selector:checked,
+ #Construction{
+	box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0px 1px 3px rgba(0,0,0,0.1);
+}
+
+.leaflet-control-layers-selector, #Construction {
+	background-color: #e9ecee;
+	border: 1px solid #adb8c0;
+	box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0px -15px 10px -12px rgba(0,0,0,0.05), inset 15px 10px -12px rgba(255,255,255,0.1);
+	color: #99a1a7;
+}
+
+.leaflet-control-layers-selector:checked, #Construction{
+	content: '\2714';
+	font-size: 14px;
+	/*position: absolute;*/
+	top: 0px;
+	left: 2px;
+		margin-right: 0px;
+	color: #99a1a7;
+}
+
+#Construction {
+  left : 2px;
+  position: relative !important;
+}
+
+/*checkbox*/
+
