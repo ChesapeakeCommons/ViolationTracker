@@ -62,6 +62,20 @@
       top: 45px; 
     }
    
+    #stats-container-2 >  input{
+      margin-top: 0 !important;
+      bottom: 5px;
+  
+    }
+    
+    #stats-container-2 > span{
+  
+      bottom: 6px;
+      margin-left : 18px;
+  
+    }
+
+   
     .leaflet-control-layers{
        top: -34px !important; 
     }
@@ -174,10 +188,19 @@
   
     }
     
-    #stats-container-2 > .shiny-input-container > .checkbox > label > input{
+    #stats-container-2 >  input{
       margin-top: 0 !important;
+      bottom: 5px;
   
     }
+    
+    #stats-container-2 > span{
+  
+      bottom: 6px;
+      margin-left : 18px;
+  
+    }
+
     
     .leaflet-control-layers{
         width: 173px !important;
@@ -393,6 +416,19 @@
     #stats-container-2 {
       top: 28px;
     }
+     #stats-container-2 >  input{
+      margin-top: 0 !important;
+      bottom: 5px;
+  
+    }
+    
+    #stats-container-2 > span{
+  
+      bottom: 6px;
+      margin-left : 18px;
+  
+    }
+
     
     .leaflet-control-search {
       margin-top: 1px !important;
@@ -421,6 +457,20 @@
     #stats-container, #stats-container-2 {
       margin-left: 4px;
     }
+     #stats-container-2 >  input{
+      margin-top: 0 !important;
+      bottom: 5px;
+  
+    }
+    
+    #stats-container-2 > span{
+  
+      bottom: 6px;
+      margin-left : 18px;
+  
+    }
+
+    
     .leaflet-control-search {
       left: 177px !important;
     } 
