@@ -257,7 +257,7 @@ leaflet("Map")%>%
                         
                        $( \"span:contains('Vulnerability')\" ).html(  \" ",
                           "<div class='legend-item'>",
-                            "<div>EJ Waste Water Vulnerability Pct. </div>",
+                            "<div>EJ Waste Water Vulnerability %</div>",
                             "<div class='legend-sub-items-container'>",
                                 "<div class='color-chart' ><div>",
                             "</div>",
@@ -266,7 +266,7 @@ leaflet("Map")%>%
                         
                  $( \"span:contains('EJ Layer')\" ).html(  \" ",
                     "<div class='legend-item'>",
-                    "<div> EJ Waste Water Vulnerability Pct. </div>",
+                    "<div> EJ Waste Water Vulnerability %</div>",
                     "<div class='legend-sub-items-container'>",
                     "<img src='./Images/EJLegend.png' />",
                     "</div>",
@@ -275,15 +275,21 @@ leaflet("Map")%>%
                         $('#stats-container').css('z-index','999');
                     $('#stats-container-2').css('z-index','999');
                     $('.leaflet-control-search > input').attr('placeholder', 'Search Address');
-                 /*   $('#stats-container').css('display','block');
+                    
+                  
+                    
+                 /*    $('#Construction').css({",
+                        "'max-width':'13px !important',",
+                        "'max-height' : '13px !important',",
+                        "'color' : 'red'",
+                  "   }); 
+                     
+                     $('#Construction').css('color','red')
+                    $('#stats-container').css('display','block');
                     $('#stats-container-2').css('display','block');
                     
-                     $('#Construction').css({
-                        'max-width':'13px !important',
-                        'max-height' : '13px !important',
-                        'color' : 'red'
-                     });
-                     $('#Construction').css('color','red')
+                    
+                    
                 */
                 }     
             "))%>%

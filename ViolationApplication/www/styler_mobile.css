@@ -19,9 +19,19 @@
     .leaflet-control-layers {
      /* height: 296px*/;
        height: 311px;
+       margin-left: 0px;
     }
+    
+    .leaflet-left .leaflet-control {
+      margin-left: 0px !important;
+    }
+    
+    
     .leaflet-control-layers-separator {
       display: none;
+    }
+    .leaflet-control {
+      margin-left: 5px !important;
     }
 }
 
@@ -60,6 +70,7 @@
     
     #stats-container-2{ 
       top: 45px; 
+      margin-left: 5px;
     }
    
     #stats-container-2 >  input{
@@ -71,13 +82,17 @@
     #stats-container-2 > span{
   
       bottom: 6px;
-      margin-left : 18px;
-  
+      margin-left: 18px;
+    
     }
 
+    .leaflet-control {
+      margin-left: 5px !important;
+    }
    
     .leaflet-control-layers{
        top: -34px !important; 
+       margin-left: 5px;
     }
      
       
@@ -143,6 +158,10 @@
      clear: both !important;
    }
    
+    .leaflet-control {
+      margin-left: 5px !important;
+    }
+   
     .legend-sub-items-container > div {
       margin-left: 5px !important;
       margin-bottom: 2px;
@@ -161,6 +180,7 @@
     .legend-item > div {
         margin-left: 5px !important;
         margin-top: 1px !important;
+        letter-spacing: 0px;
     }
     
     .legend-sub-items-container > .size-chart {
@@ -177,9 +197,10 @@
       }
     
     #stats-container-2{
-      width: 173px !important;
+      width: 180px !important;
       font: 8px "Open Sans" !important;   
       height: 27px !important;
+        margin-left: 5px;
      
     }
     
@@ -203,9 +224,9 @@
 
     
     .leaflet-control-layers{
-        width: 173px !important;
+        width: 180px !important;
         height: 315px;
-    
+        margin-left: 0px;
     }  
     .leaflet-control-layers-overlays{
        width: 180px !important;
@@ -238,7 +259,7 @@
   /*Map buttons*/
   
   .leaflet-control-search{
-      left: 177px !important;
+      left: 182px !important;
       margin-top: 5px !important;
      
   
@@ -249,7 +270,7 @@
   }
   
   .leaflet-control-zoom {
-    left: 177px !important;
+    left: 182px !important;
     top: 50px ;
     height: 50px ;
   
@@ -372,6 +393,15 @@
     .leaflet-control-layers {
      /* height: 296px*/;
        height: 321px;
+       margin-left: 0px;
+    }
+    
+    .leaflet-left .leaflet-control {
+      margin-left: 0px !important;
+    }
+    
+    .leaflet-control {
+      margin-left: 5px !important;
     }
   
 }
@@ -415,6 +445,7 @@
     
     #stats-container-2 {
       top: 28px;
+        margin-left: 5px;
     }
      #stats-container-2 >  input{
       margin-top: 0 !important;
@@ -432,10 +463,17 @@
     
     .leaflet-control-search {
       margin-top: 1px !important;
+      left: 182px;
     }
     .leaflet-control-layers {
       top: -41px !important;
+      margin-left: 0px;
     }
+    
+    .leaflet-left .leaflet-control {
+      margin-left: 0px !important;
+    }
+    
     
     .col-sm-4 {
       top: 30px;
@@ -472,11 +510,12 @@
 
     
     .leaflet-control-search {
-      left: 177px !important;
+      left: 182px !important;
     } 
     .legend-item > div {
    
       margin-top: 0;
+      letter-spacing: 0px;
     }
     .legend-header {
       font-size: 10px;
@@ -505,7 +544,17 @@
     .leaflet-control-layers {
      /* height: 296px*/;
        height: 311px;
+       margin-left: 0px;
     
+    }
+    
+    .leaflet-left .leaflet-control {
+      margin-left: 0px !important;
+    }
+    
+    
+    .leaflet-control {
+      margin-left: 5px !important;
     }
     
     
