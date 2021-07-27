@@ -671,58 +671,42 @@ margin-top: 5px;
 
 }
 
-/*checkbox*/
-/*
-.leaflet-control-layers-selector, #Construction{
-	display: none;
+/*Disclaimer*/
+#disclaimer-wrapper{
+  position: absolute;
+  z-index: 999;
+  display: block;
+
+  bottom: 0;
+  height: 47px;
+  width: 100%;
+
+
+   border-top: 2px solid #221b65;
+
+  background-color: #3d5c8a;
+   background-image: url('./Images/gradient.png');
+    background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  
+  font-family: "Open Sans" !important;
+  
 }
 
-.leaflet-control-layers-selector, #Construction{
-	background-color: #fafafa;
-	border: 1px solid #cacece;
-	box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0px -15px 10px -12px rgba(0,0,0,0.05);
-	padding: 9px;
-	border-radius: 3px;
-	display: inline-block;
-	top: 0px;
-	left: 2px;
-	margin-right: 0px;
-	width: 13px !important;
+.disclaimer {
+ 
+  position: relative;
+ 
+  margin: 5px 20px 5px 20px;
+  
+  
+  width: calc(100% - 40px);
+  text-align: left;
+  
+   font-size: 7px;
+  color: white;
+  font-weight: lighter;
+  
+  
 }
-
-.leaflet-control-layers-selector:active,  #Construction:active
-.leaflet-control-layers-selector:checked, #Construction:checked
- {
-	box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0px 1px 3px rgba(0,0,0,0.1);
-}
-
-.leaflet-control-layers-selector, #Construction   {
-	background-color: #e9ecee;
-	border: 1px solid #adb8c0;
-	box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0px -15px 10px -12px rgba(0,0,0,0.05), inset 15px 10px -12px rgba(255,255,255,0.1);
-	color: #99a1a7;
-}
-
-.leaflet-control-layers-selector:checked, #Construction:checked {
-	content: '\2714';
-	font-size: 14px;
-	top: 0px;
-	left: 2px;
-		margin-right: 0px;
-	color: #99a1a7;
-}
-*/
-/*
- {
-  left : 2px;
-  position: relative !important;
-}
-*/
-
-/*checkbox*/
-
-
-
-
-
-

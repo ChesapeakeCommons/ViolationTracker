@@ -42,7 +42,7 @@ ui <- fluidPage(
   #END Header
   mainPanel(
     
-    leafletOutput("Map", height = 'calc(100vh - 75px)', width = '100%'),
+    leafletOutput("Map", height = 'calc(100vh - 120px)', width = '100%'),
     
     div(id = 'stats-container',
         HTML('<label class="legend-header" style="width: 100%" >Totals (2016-2020) </label>'),
@@ -55,6 +55,19 @@ ui <- fluidPage(
       HTML('<span>Include Construction Permits</span>')
    #  checkboxInput("Construction", "button")
     )
+  ),
+  
+  div(id = 'disclaimer-wrapper',
+    HTML('
+      <div class="disclaimer">
+         All information posted on this website is for educational and informational purposes. 
+         It is not intended to substitute for professional advice. 
+         We make no claims of accuracy and cannot guarantee that there are no mistakes or errors. 
+         Inspection, enforcement, and compliance data is pulled from publicly available data on the 
+         Maryland Department of Environment’s Open MDE Portal.  
+         To obtain source information visit Open MDE Portal. 
+      </div>   ')
+    
   ),
   
   tags$head(
