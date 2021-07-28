@@ -65,7 +65,7 @@ ui <- fluidPage(
          We make no claims of accuracy and cannot guarantee that there are no mistakes or errors. 
          Inspection, enforcement, and compliance data is pulled from publicly available data on the 
          Maryland Department of Environment’s Open MDE Portal.  
-         To obtain source information visit Open MDE Portal. 
+         To obtain source information visit <a href="https://mdedataviewer.mde.state.md.us/">Open MDE Portal.</a> 
       </div>   ')
     
   ),
