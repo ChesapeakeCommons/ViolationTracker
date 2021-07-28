@@ -33,6 +33,13 @@
     .leaflet-control {
       margin-left: 5px !important;
     }
+      
+    .disclaimer {
+      font-size: 7px;
+      
+    }
+    
+
 }
 
 @media (min-width: 1200px){
@@ -407,6 +414,11 @@
     #disclaimer-wrapper {
       height: 70px;
     }
+      
+    .disclaimer {
+      font-size: 7px;
+      
+    }
   
 }
 
@@ -429,6 +441,7 @@
     margin: unset;
     min-width: unset;
     margin: 5px 5px 5px 5px;
+    font-size: 7px;
   }
 }
 
@@ -583,7 +596,10 @@
       margin-left: 5px !important;
     }
     
-    
+    .disclaimer {
+      font-size: 7px;
+      
+    }
   
 }
 

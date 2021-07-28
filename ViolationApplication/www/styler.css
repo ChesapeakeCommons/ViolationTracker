@@ -678,7 +678,7 @@ margin-top: 5px;
   display: block;
 
   bottom: 0;
-  height: 47px;
+  height: 55px;
   width: 100%;
 
 
@@ -704,9 +704,31 @@ margin-top: 5px;
   width: calc(100% - 40px);
   text-align: left;
   
-   font-size: 7px;
+   font-size: 10px;
   color: white;
   font-weight: lighter;
   
   
+}
+
+@media (max-width: 730px) {
+  
+  .disclaimer{
+    
+    font-size: 9px;
+  }
+}
+@media (max-width: 660px) {
+  
+  .disclaimer{
+    
+    font-size: 8px;
+  }
+}
+@media (max-width: 590px) {
+  
+  .disclaimer{
+    
+    font-size: 7px;
+  }
 }
