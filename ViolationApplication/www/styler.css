@@ -305,8 +305,11 @@ position: relative;
 }
 .leaflet-control-layers-base > label > div > input {
   margin-top : -1px !important;
+ 
 }
-
+ .leaflet-control-layers-overlays > label > div{
+   margin-top: 2px;
+ }
 .leaflet-control-layers-overlays{
   position: absolute;
   display:block;
