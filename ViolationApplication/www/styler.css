@@ -198,7 +198,7 @@ position: relative;
 
 
 .leaflet-container{
-    font:13px "Open Sans";
+    font:14px "Open Sans";
 }
 
 
@@ -216,7 +216,7 @@ position: relative;
   border: 0px solid red;
   float: left;
   display: inline-block;
-    width: 200px;
+    width: 205px;
     clear: none;
 }
 
@@ -234,7 +234,7 @@ position: relative;
   display: inline-block;
   margin-left: 20px;
   width: calc(100% - 00px);
-   font:13px/1.5 "Open Sans";
+   font:14px/1.5 "Open Sans";
 }
 .legend-sub-items-container > div,
 .legend-sub-items-container > img {
@@ -286,7 +286,7 @@ position: relative;
 
 .leaflet-control-layers{
   width: 270px;
-  height: 490px;
+  height: 510px;
    font-family: "Open Sans" !important; 
    top: 96px;
 }
@@ -294,7 +294,7 @@ position: relative;
 .leaflet-control-layers-base{
   position: absolute;
   display: block;
-  top: 410px;
+  top: 425px;
   background-color: none;
   width: 220px;
 }
@@ -319,7 +319,7 @@ position: relative;
 .leaflet-control-layers-separator{
    position: absolute;
   display: block;
-  top: 398px;
+  top: 413px;
   background-color: none;
   width: 266px;
 }
@@ -548,7 +548,7 @@ margin-top: 5px;
 
 #StatsText{
   font-family: "Open Sans" !important;
-  font-size: 13px;
+  font-size: 14px;
 }
 
 #stats-container{
@@ -578,7 +578,7 @@ margin-top: 5px;
   margin-left: 10px;
   margin-bottom: 10px;
   
-  font:13px "Open Sans" ;
+  font:14px "Open Sans" ;
 
   
 }

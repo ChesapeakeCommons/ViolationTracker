@@ -247,7 +247,7 @@ leaflet("Map")%>%
                             "<div>Violation History</div>",
                             "<div class='legend-sub-items-container'>",
                             "<img src='./Images/Markers/E.png' /><div> Resolved</div>",
-                            "<div class='legend-sub-items-container' style='margin-left: 10px; width: 100px; float:left;'><img ' src='./Images/Markers/F.png' /><div> Unresolved</div>",
+                            "<div class='legend-sub-items-container' style='margin-left: 5px; width: 105px; float:left;'><img ' src='./Images/Markers/F.png' /><div> Unresolved</div>",
                                       "</div>",
                                  
                     
