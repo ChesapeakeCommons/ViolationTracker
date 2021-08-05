@@ -67,7 +67,6 @@ ui <- fluidPage(
          Maryland Department of Environment’s Open MDE Portal.  
          To obtain source information visit <a href="https://mdedataviewer.mde.state.md.us/">Open MDE Portal.</a> 
       </div>   ')
-    
   ),
   
   tags$head(
@@ -125,8 +124,8 @@ server <- function(input, output, session) {
 Facilities <- read.csv("www/Data/Facilities_v5.csv", stringsAsFactors = FALSE)
 Permits <- read.csv("www/Data/Permits_v2.csv", stringsAsFactors = FALSE)
 ColumnSelect <- read_csv("www/Data/ColumnSelectSheet_v1.csv")
-MarylandHucs <- suppressMessages(rgdal::readOGR("www/Data/MarylandHucs_v4.geojson", verbose = TRUE))
-EJWasteWater <- suppressMessages(rgdal::readOGR("www/Data/MarylandEJLayer_v6.json", verbose = TRUE))
+MarylandHucs <- suppressMessages(rgdal::readOGR("www/Data/MarylandHucs_v5.json", verbose = TRUE))
+EJWasteWater <- suppressMessages(rgdal::readOGR("www/Data/MarylandEJLayer_v8.json", verbose = TRUE))
 FacilitiesReactive <- reactiveValues(df = data.frame(Facilities))
 PermitsReactive <- reactiveValues(df = data.frame())
 PermitPage <- reactiveValues(X = as.numeric(1))
@@ -135,29 +134,32 @@ TypeCode <- c("A","B","C","D","E","F","G")
 MarkerType <- data.frame(TypeName,TypeCode)
 
 ### Adding symbology to the EJ Layer
-for(row in 1:nrow(EJWasteWater))
-{
-if(EJWasteWater$P_PWDIS_D2[row] < 50)
-{
-  EJWasteWater$Color[row] <- "#F7FBFF"
-}
-  if(EJWasteWater$P_PWDIS_D2[row] > 50)
-  {
-    EJWasteWater$Color[row] <- "#D1BEC3"
-  }
-  if(EJWasteWater$P_PWDIS_D2[row] > 75)
-  {
-    EJWasteWater$Color[row] <- "#AB8187"
-  }
-  if(EJWasteWater$P_PWDIS_D2[row] > 85)
-  {
-    EJWasteWater$Color[row] <- "#85444A"
-  }
-  if(EJWasteWater$P_PWDIS_D2[row] > 95 )
-  {
-    EJWasteWater$Color[row] <- "#5F070E"
-  }
-}
+
+# for(row in 1:nrow(EJWasteWater))
+# {
+# if(EJWasteWater$P_PWDIS_D2[row] < 50)
+# {
+#   EJWasteWater$Color[row] <- "#F7FBFF"
+# }
+#   if(EJWasteWater$P_PWDIS_D2[row] > 50)
+#   {
+#     EJWasteWater$Color[row] <- "#D1BEC3"
+#   }
+#   if(EJWasteWater$P_PWDIS_D2[row] > 75)
+#   {
+#     EJWasteWater$Color[row] <- "#AB8187"
+#   }
+#   if(EJWasteWater$P_PWDIS_D2[row] > 85)
+#   {
+#     EJWasteWater$Color[row] <- "#85444A"
+#   }
+#   if(EJWasteWater$P_PWDIS_D2[row] > 95 )
+#   {
+#     EJWasteWater$Color[row] <- "#5F070E"
+#   }
+# }
+
+#writeOGR(EJWasteWater, "www/Data/EJWasteWater.Test", layer="EJWasteWater", driver="GeoJSON")
 
 ### ICON FUNCTION ### 
 MapIconMaker <- function(Type, Size)
@@ -195,7 +197,7 @@ InfoModal <- modalDialog(
   HTML("<br>"),
   HTML("<br>"),
   HTML("<b> For Additional Instructions and More Information About This Tracker Tool: </b>"),
-  tags$a(href="https://www.chesapeakelegal.org/", "Click Here.",  target="_blank"),
+  tags$a(href="https://www.chesapeakelegal.org/about-maryland-violations-tracker/", "Click Here.",  target="_blank"),
   
   easyClose = TRUE,
   footer = NULL,
