@@ -4,7 +4,6 @@
 
 library(RSocrata)
 library(tidyverse)
-#library(OSM)
 library(tidygeocoder)
 library(mapboxapi)
 library(lubridate)
@@ -14,13 +13,13 @@ library(jsonlite)
 library(aws.s3)
 
 ## Steps ## 
-  # Import Data from Open Maryland Data Portal # 
-  # Import Geolocation data from S3
-  # Check for additional sites # 
-  # Geocode additional sites # 
-  # Export Geolocation to S3
-  # Score facilities # 
-  # Export to S3 # 
+# Import Data from Open Maryland Data Portal # 
+# Import Geolocation data from S3
+# Check for additional sites # 
+# Geocode additional sites # 
+# Export Geolocation to S3
+# Score facilities # 
+# Export to S3 # 
 
 ## Environment Variables 
 ### AWS Credentials ### 
@@ -34,7 +33,6 @@ RawGeoCoded <- read_csv(get_object(object = "FullSitesGeoCoded.csv", bucket = "c
 # Pulling in sites which cannot be geocoded
 RawNoGeoCode <- read_csv(get_object(object = "FullSitesNotGeoCoded.csv", bucket = "cm-violation-tracker"))
 
-
 # Raw data from MDE 
 ComplianceRaw <- read.socrata("https://opendata.maryland.gov/resource/hxmu-urvx.csv")
 ViolationRaw <- read.socrata("https://opendata.maryland.gov/resource/jwx7-mgcz.csv")
@@ -44,38 +42,38 @@ EnforcementRaw <- read.socrata("https://opendata.maryland.gov/resource/qbwh-5vec
 # Getting sites from the Data and changing some variable names 
 
 ComplianceCleaned <- ComplianceRaw %>%
-                     dplyr::rename(Site.No = ai_id)
+  dplyr::rename(Site.No = ai_id)
 
 ViolationCleaned <- ViolationRaw %>%
-                     dplyr::rename("Site.No" = ai_id, "site_name" = ai_name)
+  dplyr::rename("Site.No" = ai_id, "site_name" = ai_name)
 
 EnforcementCleaned <- EnforcementRaw %>%
-                     dplyr::rename("Site.No" = ai_id, "site_name" = ai_name)
+  dplyr::rename("Site.No" = ai_id, "site_name" = ai_name)
 
 ComplianceSitesRaw <- distinct(ComplianceCleaned, Site.No, .keep_all = TRUE)%>%
-                      select(c(Site.No,site_name,addressinfo,city_state_zip))
-            
+  select(c(Site.No,site_name,addressinfo,city_state_zip))
+
 ViolationSitesRaw <- distinct(ViolationCleaned, Site.No, .keep_all = TRUE)%>%
-                     select(c(Site.No,site_name,addressinfo,city_state_zip))
-  
+  select(c(Site.No,site_name,addressinfo,city_state_zip))
+
 EnforcementSitesRaw <- distinct(EnforcementCleaned, Site.No, .keep_all = TRUE)%>%
-                       select(c(Site.No,site_name,addressinfo,city_state_zip))
+  select(c(Site.No,site_name,addressinfo,city_state_zip))
 
 ## Full Site Data
 SitesRaw <- distinct(rbind(ComplianceSitesRaw,ViolationSitesRaw,EnforcementSitesRaw),Site.No, .keep_all = TRUE)
 
 #Trimming to variables we need 
 SitesGeoCoded <- RawGeoCoded %>%
-              #   dplyr::rename(Latitude = y, Longitude = x)%>%
-                 select(c(Site.No,Latitude,Longitude,mde8name))
+  #   dplyr::rename(Latitude = y, Longitude = x)%>%
+  select(c(Site.No,Latitude,Longitude,mde8name))
 # !! 7776
 
 #Sites not in imported Geocode file 
 NotGeoCoded <- anti_join(SitesRaw,SitesGeoCoded)%>%
-               mutate(addressinfo = ifelse(addressinfo == "",site_name,addressinfo))%>%
-               filter(str_length(addressinfo) < 80)%>%
-               mutate(city_state_zip = ifelse(city_state_zip == "","MD",city_state_zip))%>%
-               mutate(GeoCodeAddress = paste(addressinfo,city_state_zip))#%>%
+  mutate(addressinfo = ifelse(addressinfo == "",site_name,addressinfo))%>%
+  filter(str_length(addressinfo) < 80)%>%
+  mutate(city_state_zip = ifelse(city_state_zip == "","MD",city_state_zip))%>%
+  mutate(GeoCodeAddress = paste(addressinfo,city_state_zip))#%>%
 # !! 937
 
 ## Removing ones which we know won't geocode
@@ -99,24 +97,24 @@ NotGeoCoded <- anti_join(NotGeoCoded,RawNoGeoCode, by = "Site.No")
 
 ### OSM GEOCODING FOR NOW #### 
 NewGeoCoded <- geo(address = NotGeoCoded$GeoCodeAddress, method = "osm", verbose = TRUE, lat = Latitude, long = Longitude)%>%
-               dplyr::rename(GeoCodeAddress = address)
+  dplyr::rename(GeoCodeAddress = address)
 
 #NewGeoCoded <- NewGeoCoded  #%>%
-              # dplyr::rename(GeoCodeAddress = address)
+# dplyr::rename(GeoCodeAddress = address)
 
 TempJoinForOSM <- NotGeoCoded %>%
-                  select(c(Site.No,GeoCodeAddress))
+  select(c(Site.No,GeoCodeAddress))
 
 NewGeoCoded_OSM <- left_join(NewGeoCoded,NotGeoCoded, by = "GeoCodeAddress")%>%
-                   select(-c(GeoCodeAddress))%>%
-                   mutate(Site.No = as.numeric(Site.No))%>%
-                   filter(!is.na(Latitude))
+  select(-c(GeoCodeAddress))%>%
+  mutate(Site.No = as.numeric(Site.No))%>%
+  filter(!is.na(Latitude))
 
 ## Generating ones that cannot be geocoded so we don't keep trying these ##
 NotGeoCoded_OSM <- left_join(NewGeoCoded,NotGeoCoded, by = "GeoCodeAddress")%>%
-                   select(-c(GeoCodeAddress))%>%
-                   mutate(Site.No = as.numeric(Site.No))%>%
-                   filter(is.na(Latitude))
+  select(-c(GeoCodeAddress))%>%
+  mutate(Site.No = as.numeric(Site.No))%>%
+  filter(is.na(Latitude))
 
 
 
@@ -163,7 +161,7 @@ FullGeoCoded <- rbind(SitesGeoCoded,NewGeoCoded_OSM)
 # All Sites with GeoCode information (if available)
 # TODO !! Save out to AWS Bucket 
 FullSitesGeoCoded <- left_join(SitesRaw,FullGeoCoded)%>%
-                     filter(!is.na(Latitude))
+  filter(!is.na(Latitude))
 
 # Writing to temp 
 write.csv(FullSitesGeoCoded, file.path(tempdir(), "FullSitesGeoCoded.csv"), row.names = FALSE)
@@ -179,7 +177,7 @@ put_object(
 # All Sites without Geocode information 
 # TODO !! Save out to AWS Bucket 
 FullSitesNotGeoCoded <- rbind.fill(RawNoGeoCode,NotGeoCoded_OSM)%>%
-                        filter(!is.na(Site.No))
+  filter(!is.na(Site.No))
 
 # Writing to temp 
 write.csv(FullSitesNotGeoCoded, file.path(tempdir(), "FullSitesNotGeoCoded.csv"), row.names = FALSE)
@@ -196,18 +194,18 @@ put_object(
 
 ## Compliance 
 ComplianceGeo <- left_join(ComplianceCleaned,FullSitesGeoCoded)%>%
-                          filter(!is.na(Latitude))%>%
-                          mutate(Type = "C")
+  filter(!is.na(Latitude))%>%
+  mutate(Type = "C")
 
 ## Violation 
 ViolationGeo <- left_join(ViolationCleaned,FullSitesGeoCoded)%>%
-                          filter(!is.na(Latitude))%>%
-                          mutate(Type = "V")
+  filter(!is.na(Latitude))%>%
+  mutate(Type = "V")
 
 ## Enforcement 
 EnforcementGeo <- left_join(EnforcementCleaned,FullSitesGeoCoded)%>%
-                          filter(!is.na(Latitude))%>%
-                          mutate(Type = "E")
+  filter(!is.na(Latitude))%>%
+  mutate(Type = "E")
 
 
 ## Combining into one big file for scoring 
@@ -247,30 +245,30 @@ CombinedData <- bind_rows(ComplianceGeo,EnforcementGeo,ViolationGeo)
 
 Permits <- CombinedData %>%
   dplyr::rename(SiteNo = Site.No,
-         SiteName = site_name,
-         StreetAddress = addressinfo,
-         CityStateZip = city_state_zip,
-         County = county,
-         InspectionType = inspection_type,
-         InspectionDate = fir_inspection_date,
-         PermitNo = permit_no,
-         NPDESNo = npdes_no,
-         CompliantTrackingNo = paf_no,
-         InspectionReason = inspection_reason,
-         SiteStatus = site_status,
-         SiteCondition = site_condition,
-         RecommendedActions = recommended_actions,
-         ComplianceAssist = compliance_assist,
-         EnforcementAction = enforcement_action,
-         EnforcementActionNo = enforcement_action_no,
-         EnforcementActionIssued = enforcement_action_issued,
-         CaseClosed = case_closed,
-         Media = media, 
-         Program = program,
-         EnfIssue = enf_issue,
-         ResolvedDate = resolved_date,
-         ViolationSNCDate = violation_date_snc_date,
-         DocumentPage = documentpage)%>%
+                SiteName = site_name,
+                StreetAddress = addressinfo,
+                CityStateZip = city_state_zip,
+                County = county,
+                InspectionType = inspection_type,
+                InspectionDate = fir_inspection_date,
+                PermitNo = permit_no,
+                NPDESNo = npdes_no,
+                CompliantTrackingNo = paf_no,
+                InspectionReason = inspection_reason,
+                SiteStatus = site_status,
+                SiteCondition = site_condition,
+                RecommendedActions = recommended_actions,
+                ComplianceAssist = compliance_assist,
+                EnforcementAction = enforcement_action,
+                EnforcementActionNo = enforcement_action_no,
+                EnforcementActionIssued = enforcement_action_issued,
+                CaseClosed = case_closed,
+                Media = media, 
+                Program = program,
+                EnfIssue = enf_issue,
+                ResolvedDate = resolved_date,
+                ViolationSNCDate = violation_date_snc_date,
+                DocumentPage = documentpage)%>%
   mutate(SiteNo = as.character(SiteNo))%>%
   mutate(InspectionDate = as_date(InspectionDate))%>%
   mutate(ResolvedDate = as_date(ResolvedDate))%>%
@@ -452,7 +450,7 @@ SiteScoreMaker <- function(InputDF)
   # making the file unique to each site ID
   SiteData <- SiteData %>%
     distinct(SiteNo, .keep_all = TRUE)
-
+  
   return(SiteData)
 }
 
