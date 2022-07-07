@@ -20,11 +20,6 @@ library(aws.s3)
 # Export Geolocation to S3
 # Score facilities # 
 # Export to S3 # 
-
-## Environment Variables 
-### AWS Credentials ### 
-
-
 ######## IMPORTS  ##### 
 
 # Previously GeoCoded sites 
@@ -60,21 +55,20 @@ EnforcementSitesRaw <- distinct(EnforcementCleaned, Site.No, .keep_all = TRUE)%>
   select(c(Site.No,site_name,addressinfo,city_state_zip))
 
 ## Full Site Data
-SitesRaw <- distinct(rbind(ComplianceSitesRaw,ViolationSitesRaw,EnforcementSitesRaw),Site.No, .keep_all = TRUE)
+SitesRaw <- distinct(rbind(ComplianceSitesRaw,ViolationSitesRaw,EnforcementSitesRaw),Site.No, .keep_all = TRUE)%>%
+            mutate(Site.No = as.numeric(Site.No))
 
 #Trimming to variables we need 
 SitesGeoCoded <- RawGeoCoded %>%
-  #   dplyr::rename(Latitude = y, Longitude = x)%>%
-  select(c(Site.No,Latitude,Longitude,mde8name))
-# !! 7776
+  select(c(Site.No,Latitude,Longitude,site_name,addressinfo,city_state_zip, mde8name))
 
 #Sites not in imported Geocode file 
-NotGeoCoded <- anti_join(SitesRaw,SitesGeoCoded)%>%
+NotGeoCoded <- anti_join(SitesRaw,SitesGeoCoded, by = "Site.No")%>%
   mutate(addressinfo = ifelse(addressinfo == "",site_name,addressinfo))%>%
   filter(str_length(addressinfo) < 80)%>%
   mutate(city_state_zip = ifelse(city_state_zip == "","MD",city_state_zip))%>%
   mutate(GeoCodeAddress = paste(addressinfo,city_state_zip))#%>%
-# !! 937
+
 
 ## Removing ones which we know won't geocode
 NotGeoCoded <- anti_join(NotGeoCoded,RawNoGeoCode, by = "Site.No")
@@ -99,9 +93,6 @@ NotGeoCoded <- anti_join(NotGeoCoded,RawNoGeoCode, by = "Site.No")
 NewGeoCoded <- geo(address = NotGeoCoded$GeoCodeAddress, method = "osm", verbose = TRUE, lat = Latitude, long = Longitude)%>%
   dplyr::rename(GeoCodeAddress = address)
 
-#NewGeoCoded <- NewGeoCoded  #%>%
-# dplyr::rename(GeoCodeAddress = address)
-
 TempJoinForOSM <- NotGeoCoded %>%
   select(c(Site.No,GeoCodeAddress))
 
@@ -115,8 +106,6 @@ NotGeoCoded_OSM <- left_join(NewGeoCoded,NotGeoCoded, by = "GeoCodeAddress")%>%
   select(-c(GeoCodeAddress))%>%
   mutate(Site.No = as.numeric(Site.No))%>%
   filter(is.na(Latitude))
-
-
 
 #### Adding Watershed Data ####
 GetWatersheds <- function(Latitude,Longitude)
@@ -132,9 +121,6 @@ GetWatersheds <- function(Latitude,Longitude)
   return(as.character(HUC8))
 }
 
-# TODO !! Remove extra code 
-# NewGeoCoded_OSM <- NewGeoCoded_OSM #%>%
-#                    # select(-c(mde8name))
 
 NewGeoCoded_OSM$mde8name <- ""
 ## Adding watershed information from WR API
@@ -146,46 +132,38 @@ for (row in 1:nrow(NewGeoCoded_OSM))
 
 
 ########################################
-
 # New GeoCoded Data 
-FullGeoCoded <- rbind(SitesGeoCoded,NewGeoCoded_OSM)
-
-# FullGeoCoded$mde8name <- ""
-# ## Adding watershed information from WR API
-# for (row in 1:nrow(FullGeoCoded))
-# {
-#   print(paste("Getting Watershed:",row))
-#   FullGeoCoded$mde8name[row] <- GetWatersheds(FullGeoCoded$Latitude[row],FullGeoCoded$Longitude[row])
-# }
+FullGeoCoded <- plyr::rbind.fill(SitesGeoCoded,NewGeoCoded_OSM)
 
 # All Sites with GeoCode information (if available)
-# TODO !! Save out to AWS Bucket 
-FullSitesGeoCoded <- left_join(SitesRaw,FullGeoCoded)%>%
-  filter(!is.na(Latitude))
+FullSitesGeoCoded <- plyr::rbind.fill(SitesRaw,FullGeoCoded)%>%
+  filter(!is.na(Latitude))%>%
+  distinct(Site.No, .keep_all = TRUE)
+  
 
 # Writing to temp 
 write.csv(FullSitesGeoCoded, file.path(tempdir(), "FullSitesGeoCoded.csv"), row.names = FALSE)
 
-# Putting in Bucket 
+#Putting in Bucket
 put_object(
-  file = file.path(tempdir(), "FullSitesGeoCoded.csv"), 
-  object = "FullSitesGeoCoded.csv", 
+  file = file.path(tempdir(), "FullSitesGeoCoded.csv"),
+  object = "FullSitesGeoCoded.csv",
   bucket = "cm-violation-tracker"
 )
 
 
 # All Sites without Geocode information 
-# TODO !! Save out to AWS Bucket 
-FullSitesNotGeoCoded <- rbind.fill(RawNoGeoCode,NotGeoCoded_OSM)%>%
-  filter(!is.na(Site.No))
+FullSitesNotGeoCoded <- plyr::rbind.fill(RawNoGeoCode,NotGeoCoded_OSM)%>%
+  filter(!is.na(Site.No))%>%
+  distinct(Site.No, .keep_all = TRUE)
 
 # Writing to temp 
 write.csv(FullSitesNotGeoCoded, file.path(tempdir(), "FullSitesNotGeoCoded.csv"), row.names = FALSE)
 
-# Putting in Bucket 
+#Putting in Bucket
 put_object(
-  file = file.path(tempdir(), "FullSitesNotGeoCoded.csv"), 
-  object = "FullSitesNotGeoCoded.csv", 
+  file = file.path(tempdir(), "FullSitesNotGeoCoded.csv"),
+  object = "FullSitesNotGeoCoded.csv",
   bucket = "cm-violation-tracker"
 )
 
@@ -281,10 +259,10 @@ Permits <- CombinedData %>%
 ### Save out to AWS Bucket ### 
 write.csv(Permits, file.path(tempdir(), "Permits.csv"), row.names = FALSE)
 
-# Putting in Bucket 
+# Putting in Bucket
 put_object(
-  file = file.path(tempdir(), "Permits.csv"), 
-  object = "Permits.csv", 
+  file = file.path(tempdir(), "Permits.csv"),
+  object = "Permits.csv",
   bucket = "cm-violation-tracker"
 )
 
@@ -460,10 +438,10 @@ Facilities <- SiteScoreMaker(Permits)
 
 write.csv(Facilities, file.path(tempdir(), "Facilities.csv"), row.names = FALSE)
 
-# Putting in Bucket 
+# Putting in Bucket
 put_object(
-  file = file.path(tempdir(), "Facilities.csv"), 
-  object = "Facilities.csv", 
+  file = file.path(tempdir(), "Facilities.csv"),
+  object = "Facilities.csv",
   bucket = "cm-violation-tracker"
 )
 
