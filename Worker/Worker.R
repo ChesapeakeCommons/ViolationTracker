@@ -67,45 +67,56 @@ NotGeoCoded <- anti_join(SitesRaw,SitesGeoCoded, by = "Site.No")%>%
   mutate(addressinfo = ifelse(addressinfo == "",site_name,addressinfo))%>%
   filter(str_length(addressinfo) < 80)%>%
   mutate(city_state_zip = ifelse(city_state_zip == "","MD",city_state_zip))%>%
-  mutate(GeoCodeAddress = paste(addressinfo,city_state_zip))#%>%
+  mutate(GeoCodeAddress = paste(addressinfo,city_state_zip))%>%
+  mutate(Latitude = "")%>%
+  mutate(Longitude = "")%>%
+  mutate(mde8name = "")
 
 
 ## Removing ones which we know won't geocode
 NotGeoCoded <- anti_join(NotGeoCoded,RawNoGeoCode, by = "Site.No")
+              
 
-### Remove ones that are in the unable to be geocoded list
+### MapBox GeoCoding 
+if(nrow(NotGeoCoded) > 0)
+{
+MDBoundingBox <- c(-79.487651,37.911717,-75.048939,39.723043)
+MBGeoCodeResults <- NotGeoCoded
+MBGeoCodeResults$LatLong <- ""
+## Adding watershed information from WR API
+for (row in 1:nrow(MBGeoCodeResults))
+{
+  print(paste("Getting Geolocation:",row))
+  MBGeoCodeResults$LatLong[row] <- list(mb_geocode(MBGeoCodeResults$GeoCodeAddress[row],
+                                                   access_token = "MB_API_TOKEN",
+                                                   output = "coordinates", limit = 1, endpoint = "mapbox.places-permanent", search_within = MDBoundingBox))
+  if(!is.null(MBGeoCodeResults$LatLong[[row]][2]))
+  {
+    MBGeoCodeResults$Latitude[row] <- MBGeoCodeResults$LatLong[[row]][2]
+    MBGeoCodeResults$Longitude[row] <- MBGeoCodeResults$LatLong[[row]][1]
+  }
+}
+#End Loop # 
 
-# Mapbox Geocoding 
-# !! TODO Moving to this for full production but need auth from Mapbox 
-# NewGeoCoded <- NotGeoCoded %>%
-#                rowwise()%>%
-#                mutate(LatLong = list(mb_geocode(GeoCodeAddress, 
-#                                      access_token = Sys.getenv("MB_API_TOKEN"), 
-#                                      output = "coordinates", limit = 1, endpoint = "mapbox.places-permanent")))%>%
-#                mutate(x = LatLong[1])%>%
-#                mutate(y = LatLong[2])%>%
-#                select(c(Site.No,x,y))
+NewGeoCoded_MB <- MBGeoCodeResults %>%
+  filter(!is.null(LatLong))%>%
+  select(-c(LatLong,GeoCodeAddress))
 
-########################################
+NotGeoCoded_MB <- MBGeoCodeResults %>%
+  filter(LatLong == "NULL")%>%
+  mutate(Latitude = NA)%>%
+  mutate(Longitude = NA)%>%
+  select(-c(LatLong,GeoCodeAddress))
+} else {
+  
+  NewGeoCoded_MB <- NotGeoCoded %>%
+                     select(-c(GeoCodeAddress))
+  NotGeoCoded_MB <- NotGeoCoded %>%
+                     select(-c(GeoCodeAddress))
+}
 
+#### END MB GEOCODING #####
 
-### OSM GEOCODING FOR NOW #### 
-NewGeoCoded <- geo(address = NotGeoCoded$GeoCodeAddress, method = "osm", verbose = TRUE, lat = Latitude, long = Longitude)%>%
-  dplyr::rename(GeoCodeAddress = address)
-
-TempJoinForOSM <- NotGeoCoded %>%
-  select(c(Site.No,GeoCodeAddress))
-
-NewGeoCoded_OSM <- left_join(NewGeoCoded,NotGeoCoded, by = "GeoCodeAddress")%>%
-  select(-c(GeoCodeAddress))%>%
-  mutate(Site.No = as.numeric(Site.No))%>%
-  filter(!is.na(Latitude))
-
-## Generating ones that cannot be geocoded so we don't keep trying these ##
-NotGeoCoded_OSM <- left_join(NewGeoCoded,NotGeoCoded, by = "GeoCodeAddress")%>%
-  select(-c(GeoCodeAddress))%>%
-  mutate(Site.No = as.numeric(Site.No))%>%
-  filter(is.na(Latitude))
 
 #### Adding Watershed Data ####
 GetWatersheds <- function(Latitude,Longitude)
@@ -122,18 +133,17 @@ GetWatersheds <- function(Latitude,Longitude)
 }
 
 
-NewGeoCoded_OSM$mde8name <- ""
+
 ## Adding watershed information from WR API
-for (row in 1:nrow(NewGeoCoded_OSM))
+for (row in 1:nrow(NewGeoCoded_MB))
 {
   print(paste("Getting Watershed:",row))
-  NewGeoCoded_OSM$mde8name[row] <- GetWatersheds(NewGeoCoded_OSM$Latitude[row],NewGeoCoded_OSM$Longitude[row])
+  NewGeoCoded_MB$mde8name[row] <- GetWatersheds(NewGeoCoded_MB$Latitude[row],NewGeoCoded_MB$Longitude[row])
 }
-
 
 ########################################
 # New GeoCoded Data 
-FullGeoCoded <- plyr::rbind.fill(SitesGeoCoded,NewGeoCoded_OSM)
+FullGeoCoded <- plyr::rbind.fill(SitesGeoCoded,NewGeoCoded_MB)
 
 # All Sites with GeoCode information (if available)
 FullSitesGeoCoded <- plyr::rbind.fill(SitesRaw,FullGeoCoded)%>%
@@ -151,11 +161,16 @@ put_object(
   bucket = "cm-violation-tracker"
 )
 
+## Ones we won't geocode b/c their address length is too lomg
+NotGeoCodeAble <- anti_join(SitesRaw,SitesGeoCoded, by = "Site.No")%>%
+                  mutate(addressinfo = ifelse(addressinfo == "",site_name,addressinfo))%>%
+                  filter(str_length(addressinfo) >= 80)
 
 # All Sites without Geocode information 
-FullSitesNotGeoCoded <- plyr::rbind.fill(RawNoGeoCode,NotGeoCoded_OSM)%>%
+FullSitesNotGeoCoded <- plyr::rbind.fill(RawNoGeoCode,NotGeoCodeAble,NotGeoCoded_MB)%>%
   filter(!is.na(Site.No))%>%
-  distinct(Site.No, .keep_all = TRUE)
+  distinct(Site.No, .keep_all = TRUE)%>%
+  mutate(mde8name = NA)
 
 # Writing to temp 
 write.csv(FullSitesNotGeoCoded, file.path(tempdir(), "FullSitesNotGeoCoded.csv"), row.names = FALSE)
@@ -431,8 +446,6 @@ SiteScoreMaker <- function(InputDF)
   
   return(SiteData)
 }
-
-
 ## Writing out to bucket ## 
 Facilities <- SiteScoreMaker(Permits)
 
