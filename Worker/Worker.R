@@ -88,7 +88,7 @@ for (row in 1:nrow(MBGeoCodeResults))
 {
   print(paste("Getting Geolocation:",row))
   MBGeoCodeResults$LatLong[row] <- list(mb_geocode(MBGeoCodeResults$GeoCodeAddress[row],
-                                                   access_token = "MB_API_TOKEN",
+                                                   access_token = Sys.getenv("MB_API_TOKEN"),
                                                    output = "coordinates", limit = 1, endpoint = "mapbox.places-permanent", search_within = MDBoundingBox))
   if(!is.null(MBGeoCodeResults$LatLong[[row]][2]))
   {
@@ -103,14 +103,16 @@ NewGeoCoded_MB <- MBGeoCodeResults %>%
   select(-c(LatLong,GeoCodeAddress))
 
 NotGeoCoded_MB <- MBGeoCodeResults %>%
-  filter(LatLong == "NULL")%>%
-  mutate(Latitude = NA)%>%
-  mutate(Longitude = NA)%>%
+  filter(Latitude == "")%>%
+  #mutate(Latitude = NA)%>%
+#  mutate(Longitude = NA)%>%
   select(-c(LatLong,GeoCodeAddress))
+
 } else {
   
   NewGeoCoded_MB <- NotGeoCoded %>%
                      select(-c(GeoCodeAddress))
+  
   NotGeoCoded_MB <- NotGeoCoded %>%
                      select(-c(GeoCodeAddress))
 }
