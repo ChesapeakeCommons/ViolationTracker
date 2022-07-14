@@ -99,13 +99,11 @@ for (row in 1:nrow(MBGeoCodeResults))
 #End Loop # 
 
 NewGeoCoded_MB <- MBGeoCodeResults %>%
-  filter(!is.null(LatLong))%>%
+  filter(Latitude != "")%>%
   select(-c(LatLong,GeoCodeAddress))
 
 NotGeoCoded_MB <- MBGeoCodeResults %>%
   filter(Latitude == "")%>%
-  #mutate(Latitude = NA)%>%
-#  mutate(Longitude = NA)%>%
   select(-c(LatLong,GeoCodeAddress))
 
 } else {
