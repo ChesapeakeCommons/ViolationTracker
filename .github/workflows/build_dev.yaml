@@ -30,7 +30,7 @@ jobs:
     #-------------------------------
     # CONTAINER_BUILD
     - name: build container
-      run: docker build . --file ./Worker/Dockerfile --tag commons/violationtracker_worker:dev
+      run: docker build ./Worker --file ./Worker/Dockerfile --tag commons/violationtracker_worker:dev
     #-------------------------------
     # INITIALIZE_AWS_CREDS
   #  - name: initialize AWS creds
