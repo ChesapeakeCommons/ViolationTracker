@@ -88,3 +88,7 @@ Full Documentation for each component can be found in app.R server side by using
 * Next Button Observe 
 * Back Button Observe 
 * TableIndex 
+
+
+#### Container build
+docker build -f Worker/Dockerfile -t 833394423843.dkr.ecr.us-east-1.amazonaws.com/violationtracker_worker:dev Worker/

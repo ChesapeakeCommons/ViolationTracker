@@ -18,9 +18,10 @@ RUN cd /home/cm
 
 RUN install2.r --error RSocrata tidyverse tidygeocoder mapboxapi lubridate httr jsonlite aws.s3 plyr
 
-
+#------------
 RUN ls -al '/home/cm'
-
 ADD Worker.R /home/cm/
 
 CMD Rscript /home/cm/Worker.R
+
+#------------

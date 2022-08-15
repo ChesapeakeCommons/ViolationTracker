@@ -2,62 +2,77 @@ name: violationtracker_worker_dev
 on:
   push:
     branches: [ Worker ]
-  #paths:
-  #- './Worker/**'
+  # paths:
+  # - './Worker/**'
 
 env:
   ENV: dev
   AWS_REGION: us-east-1
-  #ECR_REGISTRY: 833394423843.dkr.ecr.us-east-1.amazonaws.com
-  #ECR_REPOSITORY: waterreporter_api
+  ECR_REGISTRY: 833394423843.dkr.ecr.us-east-1.amazonaws.com
+  ECR_REPOSITORY: violationtracker_worker
   IMAGE_TAG: dev
+
 jobs:
   build_container:
     runs-on: ubuntu-latest
     steps:
+
     #-------------------------------
     # GIT_CHECKOUT
     - uses: actions/checkout@v2
+
     #-------------------------------
     # INITIALIZE_PYTHON3
     - name: initialize python3
       uses: actions/setup-python@v2
       with:
         python-version: '3.x'
+
+    #-------------------------------
     # INSTALL CM_CLI DEPS
-   # - name: install cm_cli dependencies
-      #run: pip3 install -r ops/requirements.txt
+    - name: install cm_cli dependencies
+      run: pip3 install -r ops/requirements.txt
+
     #-------------------------------
     # CONTAINER_BUILD
     - name: build container
       run: docker build ./Worker --file ./Worker/Dockerfile --tag commons/violationtracker_worker:dev
     #-------------------------------
-    # INITIALIZE_AWS_CREDS
-  #  - name: initialize AWS creds
-  #    uses: aws-actions/configure-aws-credentials@v1
-   #   with:
-    #    aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-     #   aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      #  aws-region: ${{ env.AWS_REGION }}
+    # INITIALIZE_AWS_CREDS 
+    - name: initialize AWS creds
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+
     #-------------------------------
     # AWS_ECR_LOGIN
-   # - name: login to AWS ECR
-   #   id: login-ecr
-   #   uses: aws-actions/amazon-ecr-login@v1
+    - name: login to AWS ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+
     #-------------------------------
     # CONTAINER_PUBLISH
-   # - name: container publish to AWS ECR
-   #   id: push-image
-    #  env:
-    #    ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-    #    IMAGE_TAG: dev # ${{ github.sha }}
-    #  run: |
-   #     docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-    #    echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+    - name: container publish to AWS ECR
+      id: push-image
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        IMAGE_TAG: dev # ${{ github.sha }}
+      run: |
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+        echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+    
     #-------------------------------
-    # DEPLOY_CONTAINER
-  #  - name: container deploy to AWS ECS
-  #    id: deploy-image
-  #    run: python3 -u ops/cm_cli.py -run=update_ecs_service -env=${{ env.ENV }} -service_name=waterreporter_api
+    # S3_UPLOAD TESTING
+    - name: Airflow DAG definition (.py file) push to Airflow App-sources S3 bucket
+      uses: shallwefootball/s3-upload-action@master
+      with:
+        aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY}}
+        aws_key_id: ${{ secrets.AWS_KEY_ID }}
+        aws_bucket: 'cm-jobs-apps-sources--${{ env.ENV }}-${{ env.AWS_REGION }}'
+        source_dir: './Worker/airflow/'
+        destination_dir: '/dags'
+
     #-------------------------------
 
