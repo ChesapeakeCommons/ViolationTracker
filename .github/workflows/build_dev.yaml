@@ -29,9 +29,9 @@ jobs:
         python-version: '3.x'
 
     #-------------------------------
-    # INSTALL CM_CLI DEPS
-    - name: install cm_cli dependencies
-      run: pip3 install -r ops/requirements.txt
+    # # INSTALL CM_CLI DEPS
+    # - name: install cm_cli dependencies
+    #   run: pip3 install -r ops/requirements.txt
 
     #-------------------------------
     # CONTAINER_BUILD
