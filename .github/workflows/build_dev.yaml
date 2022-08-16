@@ -70,7 +70,7 @@ jobs:
       uses: shallwefootball/s3-upload-action@master
       with:
         aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY}}
-        aws_key_id: ${{ secrets.AWS_KEY_ID }}
+        aws_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws_bucket: 'cm-jobs-apps-sources--${{ env.ENV }}-${{ env.AWS_REGION }}'
         source_dir: './Worker/airflow/'
         destination_dir: '/dags'
