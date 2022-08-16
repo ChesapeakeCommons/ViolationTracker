@@ -72,5 +72,3 @@ with DAG(
         # keep the worker container network isolated from the host it runs on
         network_mode="bridge"
     )
-
-    t1 >> t2
