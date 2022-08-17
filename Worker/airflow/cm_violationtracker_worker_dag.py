@@ -59,8 +59,8 @@ with DAG(
         # command="/bin/sleep 10",
 
         environment={
-            "MB_API_TOKEN": "",
-            "WR_API_TOKEN": ""
+            "MB_API_TOKEN": "{{ var.value.get('cm_mapbox_api_token_dev', 'undefined') }}",
+            "WR_API_TOKEN": "{{ var.value.get('cm_waterreporter_api_key_dev', 'undefined') }}"
         },
         
         api_version='auto',
