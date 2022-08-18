@@ -59,6 +59,7 @@ with DAG(
         # command="/bin/sleep 10",
 
         environment={
+            "AWS_DEFAULT_REGION": "us-east-1",
             "MB_API_TOKEN": "{{ var.value.get('cm_mapbox_api_token_dev', 'undefined') }}",
             "WR_API_TOKEN": "{{ var.value.get('cm_waterreporter_api_key_dev', 'undefined') }}"
         },
