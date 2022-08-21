@@ -74,5 +74,9 @@ with DAG(
         docker_url=docker_host_url_str,
 
         # keep the worker container network isolated from the host it runs on
-        network_mode="bridge"
-    )
+        network_mode="bridge",
+        
+        # MEMORY_CONSTRAINT
+        # comment out if you dont want to limit how much memory this container is allowed
+        # to consume at worst.
+        mem_limit="1gb")
