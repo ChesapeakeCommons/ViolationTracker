@@ -158,7 +158,8 @@ write.csv(FullSitesGeoCoded, file.path(tempdir(), "FullSitesGeoCoded.csv"), row.
 put_object(
   file = file.path(tempdir(), "FullSitesGeoCoded.csv"),
   object = "FullSitesGeoCoded.csv",
-  bucket = "cm-violation-tracker"
+  bucket = "cm-violation-tracker",
+  check_region = FALSE
 )
 
 ## Ones we won't geocode b/c their address length is too lomg
@@ -179,7 +180,8 @@ write.csv(FullSitesNotGeoCoded, file.path(tempdir(), "FullSitesNotGeoCoded.csv")
 put_object(
   file = file.path(tempdir(), "FullSitesNotGeoCoded.csv"),
   object = "FullSitesNotGeoCoded.csv",
-  bucket = "cm-violation-tracker"
+  bucket = "cm-violation-tracker",
+  check_region = FALSE
 )
 
 #######################
@@ -278,7 +280,8 @@ write.csv(Permits, file.path(tempdir(), "Permits.csv"), row.names = FALSE)
 put_object(
   file = file.path(tempdir(), "Permits.csv"),
   object = "Permits.csv",
-  bucket = "cm-violation-tracker"
+  bucket = "cm-violation-tracker",
+  check_region = FALSE
 )
 
 ### Marker Logic ###
@@ -455,7 +458,8 @@ write.csv(Facilities, file.path(tempdir(), "Facilities.csv"), row.names = FALSE)
 put_object(
   file = file.path(tempdir(), "Facilities.csv"),
   object = "Facilities.csv",
-  bucket = "cm-violation-tracker"
+  bucket = "cm-violation-tracker",
+  check_region = FALSE
 )
 
 
