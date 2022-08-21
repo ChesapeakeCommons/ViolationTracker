@@ -2,21 +2,19 @@ from datetime import datetime, timedelta
 from textwrap import dedent
 
 from airflow import DAG
-from airflow.models import Variable
+# from airflow.models import Variable
 
-from airflow.operators.bash import BashOperator
-from airflow.operators.python_operator import PythonOperator
+# from airflow.operators.bash import BashOperator
+# from airflow.operators.python_operator import PythonOperator
 from airflow.operators.docker_operator import DockerOperator
-
-
 
 docker_host_url_str = "tcp://localhost:2376" # "unix://var/run/docker.sock"
 
-#-----------------------------------------------------------------
-def get_variable_fn(**kwargs):
-    cm_mapbox_api_token_str = Variable.get("cm_mapbox_api_token_dev", default_var="undefined")
-    print("cm_mapbox_api_token: ", cm_mapbox_api_token_str)
-    return cm_mapbox_api_token_str
+# #-----------------------------------------------------------------
+# def get_variable_fn(**kwargs):
+#     cm_mapbox_api_token_str = Variable.get("cm_mapbox_api_token_dev", default_var="undefined")
+#     print("cm_mapbox_api_token: ", cm_mapbox_api_token_str)
+#     return cm_mapbox_api_token_str
 
 #-----------------------------------------------------------------
 with DAG(
@@ -53,13 +51,13 @@ with DAG(
 ) as dag:
 
     # DOCKER_OPERATOR
-    t2 = DockerOperator(
+    t1 = DockerOperator(
         task_id='R_worker',
         image='833394423843.dkr.ecr.us-east-1.amazonaws.com/violationtracker_worker:dev',
         # command="/bin/sleep 10",
 
         environment={
-            "AWS_DEFAULT_REGION": "us-east-1",
+            # "AWS_DEFAULT_REGION": "us-east-1",
             "MB_API_TOKEN": "{{ var.value.get('cm_mapbox_api_token_dev', 'undefined') }}",
             "WR_API_TOKEN": "{{ var.value.get('cm_waterreporter_api_key_dev', 'undefined') }}"
         },
@@ -68,8 +66,13 @@ with DAG(
 
         # Allows to remove the Docker container as soon as the task is finished
         auto_remove=True,
+
+        # always try to pull the latest version of the container, in case the image
+        # got updated by a build system or manually by a developer.
+        force_pull=True,
+
         docker_url=docker_host_url_str,
 
         # keep the worker container network isolated from the host it runs on
-        network_mode="host"
+        network_mode="bridge"
     )
