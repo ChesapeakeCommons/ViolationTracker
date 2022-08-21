@@ -16,7 +16,7 @@ RUN mkdir -p /home/cm
 RUN cd /home/cm
 
 
-RUN install2.r --error RSocrata tidyverse tidygeocoder mapboxapi lubridate httr jsonlite aws.s3 plyr
+RUN install2.r --error RSocrata tidyverse tidygeocoder mapboxapi lubridate httr jsonlite aws.s3 aws.ec2metadata plyr
 
 #------------
 RUN ls -al '/home/cm'
