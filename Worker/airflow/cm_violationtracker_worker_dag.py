@@ -53,7 +53,7 @@ dag = DAG(
 t1 = DockerOperator(
     task_id='R_worker',
     image='833394423843.dkr.ecr.us-east-1.amazonaws.com/violationtracker_worker:dev',
-    # container_name="cm_violationtracker_r_worker",
+    container_name="cm_violationtracker_r_worker_{{ ts_nodash }}",
 
     # command="/bin/sleep 10",
 
