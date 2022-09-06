@@ -202,6 +202,8 @@ leaflet("Map")%>%
             addProviderTiles("Esri.WorldImagery", group = "Satellite")%>%
             hideGroup("Watersheds")%>%
             hideGroup("EJ Waste Water Vulnerability Pct.")%>%
+            hideGroup("Violation")%>%
+            hideGroup("Enforcement")%>%
             addMapPane("polygons", zIndex = 210)%>%
             addPolygons(data = MarylandHucs, color = "#b3b3b3", weight = 1, group = "Watersheds", options = pathOptions(pane = "polygons"), label = paste(MarylandHucs$mde8name, "Watershed", sep = " "))%>%
             addPolygons(data = EJWasteWater, color = ~Color, weight = 1, fillOpacity = .65, opacity = .5, group = "EJ Waste Water Vulnerability Pct.", options = pathOptions(pane = "polygons"), label = paste0("Waste Water Discharge Vulnerability: ",round(EJWasteWater$P_PWDIS_D2,1),"th Pct."))%>%
