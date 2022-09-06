@@ -10,6 +10,7 @@ library(leaflet.extras)
 library(rgdal)
 library(jsonlite)
 library(scales)
+library(aws.s3)
 
 
 # Define UI for Application 
@@ -45,7 +46,7 @@ ui <- fluidPage(
     leafletOutput("Map", height = 'calc(100vh - 120px)', width = '100%'),
     
     div(id = 'stats-container',
-        HTML('<label class="legend-header" style="width: 100%" >Totals (2016-2020) </label>'),
+        HTML('<label class="legend-header" style="width: 100%" >Totals (2016-Present) </label>'),
         uiOutput("StatsText"),
     ),
     div(id = 'stats-container-2',
@@ -64,8 +65,8 @@ ui <- fluidPage(
          It is not intended to substitute for professional advice. 
          We make no claims of accuracy and cannot guarantee that there are no mistakes or errors. 
          Inspection, enforcement, and compliance data is pulled from publicly available data on the 
-         Maryland Department of Environment’s Open MDE Portal.  
-         To obtain source information visit <a href="https://mdedataviewer.mde.state.md.us/">Open MDE Portal.</a> 
+         Open Maryland Data Portal.  
+         To obtain source information visit <a href="https://opendata.maryland.gov/browse?limitTo=datasets&q=Water+and+Science+Administration+&sortBy=relevance">Open Maryland Data Portal.</a> 
       </div>   ')
   ),
   
@@ -121,11 +122,22 @@ server <- function(input, output, session) {
   
     
 #### DATA IMPORT AND VARIABLE DECLERATION #####
-Facilities <- read.csv("www/Data/Facilities_v5.csv", stringsAsFactors = FALSE)
-Permits <- read.csv("www/Data/Permits_v2.csv", stringsAsFactors = FALSE)
-ColumnSelect <- read_csv("www/Data/ColumnSelectSheet_v1.csv")
-MarylandHucs <- suppressMessages(rgdal::readOGR("www/Data/MarylandHucs_v5.json", verbose = TRUE))
-EJWasteWater <- suppressMessages(rgdal::readOGR("www/Data/MarylandEJLayer_v8.json", verbose = TRUE))
+Facilities <- read_csv(get_object(object = "Facilities.csv", bucket = "cm-violation-tracker"), show_col_types = FALSE)
+
+## We need to trim some facilities down to MD because of a GeoCoding issue. Fixing here b/c worker is a bit delicate.
+Facilities <- Facilities %>%
+             filter(Latitude > 37.911717)%>%
+             filter(Latitude < 39.723043)%>%
+             filter(Longitude < -75.048939)%>%
+             filter(Longitude > -79.487651)%>%
+             filter(SiteNo != 173319)%>%
+             filter(SiteNo != 159200)%>%
+             filter(SiteNo != 171058)
+
+Permits <- read_csv(get_object(object = "Permits.csv", bucket = "cm-violation-tracker"), show_col_types = FALSE)
+ColumnSelect <- read_csv("www/Data/ColumnSelectSheet_v1.csv", show_col_types = FALSE)
+MarylandHucs <- suppressMessages(rgdal::readOGR("www/Data/MarylandHucs_v5.json", verbose = FALSE))
+EJWasteWater <- suppressMessages(rgdal::readOGR("www/Data/MarylandEJLayer_v8.json", verbose = FALSE))
 FacilitiesReactive <- reactiveValues(df = data.frame(Facilities))
 PermitsReactive <- reactiveValues(df = data.frame())
 PermitPage <- reactiveValues(X = as.numeric(1))
@@ -134,32 +146,6 @@ TypeCode <- c("A","B","C","D","E","F","G")
 MarkerType <- data.frame(TypeName,TypeCode)
 
 ### Adding symbology to the EJ Layer
-
-# for(row in 1:nrow(EJWasteWater))
-# {
-# if(EJWasteWater$P_PWDIS_D2[row] < 50)
-# {
-#   EJWasteWater$Color[row] <- "#F7FBFF"
-# }
-#   if(EJWasteWater$P_PWDIS_D2[row] > 50)
-#   {
-#     EJWasteWater$Color[row] <- "#D1BEC3"
-#   }
-#   if(EJWasteWater$P_PWDIS_D2[row] > 75)
-#   {
-#     EJWasteWater$Color[row] <- "#AB8187"
-#   }
-#   if(EJWasteWater$P_PWDIS_D2[row] > 85)
-#   {
-#     EJWasteWater$Color[row] <- "#85444A"
-#   }
-#   if(EJWasteWater$P_PWDIS_D2[row] > 95 )
-#   {
-#     EJWasteWater$Color[row] <- "#5F070E"
-#   }
-# }
-
-#writeOGR(EJWasteWater, "www/Data/EJWasteWater.Test", layer="EJWasteWater", driver="GeoJSON")
 
 ### ICON FUNCTION ### 
 MapIconMaker <- function(Type, Size)
@@ -184,7 +170,7 @@ InfoModal <- modalDialog(
   HTML("Use the Legend to control whether inspections, enforcement, or violations appear on the map."),
   HTML("<br>"),
   HTML("<li>"),
-  HTML("All inspection, enforcement, and compliance data is pulled from Maryland Department of Environment’s Open MDE Portal. 
+  HTML("All inspection, enforcement, and compliance data is pulled from the Maryland Open Data Portal and updated daily.
      For more info, search the site number in the"),
   tags$a(href="https://mdedataviewer.mde.state.md.us/", "Open MDE portal.",  target="_blank"),
   HTML("<br>"),
@@ -215,6 +201,7 @@ leaflet("Map")%>%
             addProviderTiles("CartoDB.VoyagerLabelsUnder", group = "Streets")%>%
             addProviderTiles("Esri.WorldImagery", group = "Satellite")%>%
             hideGroup("Watersheds")%>%
+            hideGroup("EJ Waste Water Vulnerability Pct.")%>%
             addMapPane("polygons", zIndex = 210)%>%
             addPolygons(data = MarylandHucs, color = "#b3b3b3", weight = 1, group = "Watersheds", options = pathOptions(pane = "polygons"), label = paste(MarylandHucs$mde8name, "Watershed", sep = " "))%>%
             addPolygons(data = EJWasteWater, color = ~Color, weight = 1, fillOpacity = .65, opacity = .5, group = "EJ Waste Water Vulnerability Pct.", options = pathOptions(pane = "polygons"), label = paste0("Waste Water Discharge Vulnerability: ",round(EJWasteWater$P_PWDIS_D2,1),"th Pct."))%>%
